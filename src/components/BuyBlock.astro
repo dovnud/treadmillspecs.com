@@ -1,13 +1,20 @@
 ---
-import { AFFILIATE_REL, AFFILIATE_TARGET, AMAZON_DISCLOSURE, AMAZON_TAG, amazonSearchUrl } from '../config/affiliate';
-interface Props { query: string; name: string }
-const { query, name } = Astro.props;
-const href = amazonSearchUrl(query);
+import { AFFILIATE_REL, AFFILIATE_TARGET, AMAZON_DISCLOSURE, linkFor } from '../config/affiliate';
+interface Props { slug: string; query: string; name: string }
+const { slug, query, name } = Astro.props;
+const link = linkFor(slug, query);
+const label = link.kind === 'product' ? `View the ${name} on Amazon` : `Search Amazon for the ${name}`;
 ---
 <aside class="buy">
-  <div class="buy-head">Find it on Amazon</div>
+  <div class="buy-head">{link.kind === 'product' ? 'On Amazon' : 'Find it on Amazon'}</div>
   <div class="buy-body">
-    <p><a class="btn" href={href} rel={AFFILIATE_REL} target={AFFILIATE_TARGET}>Search Amazon for the {name}</a></p>
-    <p class="amz-note">{AMAZON_DISCLOSURE} {AMAZON_TAG === 'TODO-TAG' ? 'The Associates tag is not active yet, so this search link has no tag parameter.' : ''} No price is shown here. Amazon search results change, and a result is not a verified product match.</p>
+    <p><a class="btn" href={link.href} rel={AFFILIATE_REL} target={AFFILIATE_TARGET}>{label}</a></p>
+    <p class="amz-note">
+      {AMAZON_DISCLOSURE}
+      {link.kind === 'product'
+        ? ` This goes to the Amazon page opened on ${link.verified}, whose title was “${link.title}.”`
+        : ' This is an Amazon search. A result is not a verified product match.'}
+      No price is shown here.
+    </p>
   </div>
 </aside>

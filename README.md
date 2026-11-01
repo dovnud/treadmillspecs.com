@@ -36,7 +36,7 @@ When a database can be created:
 
 ### Amazon Associates
 
-`src/config/affiliate.ts` holds `AMAZON_TAG`. It is `TODO-TAG` until a tag is issued. Search links omit the tag parameter until that constant changes. No ASIN is linked until one is verified on a live Amazon page.
+`src/config/affiliate.ts` holds `AMAZON_TAG` (`treadmillspecs-20`). Search links and verified `/dp/` links both include it. A `/dp/` link is used only when a live Amazon title named that one model.
 
 ### IndexNow
 

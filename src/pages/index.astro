@@ -1,68 +1,106 @@
 ---
 import Base from '../layouts/Base.astro';
 import Byline from '../components/Byline.astro';
+import HeroArt from '../components/HeroArt.astro';
 import { models, modelPath, brands } from '../data/models';
+import { linkFor, AFFILIATE_REL, AFFILIATE_TARGET } from '../config/affiliate';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
 
-const desc = 'Treadmill deck size, motor, user weight, and footprint from manufacturer pages, plus a room check that uses only those published inches.';
+const desc = 'Treadmill deck, motor, and footprint from manufacturer pages, with Amazon links and lists for small rooms, low ceilings, and folding models.';
 const jsonld = [
   webPageLd('Treadmill specs and will-it-fit', '/', desc, SITE.checked),
   crumbLd([]),
   {
     '@type': 'ItemList',
-    name: 'Treadmill models with manufacturer specs',
-    itemListElement: models.map((m, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      name: m.name,
-      url: SITE.url + modelPath(m),
-    })),
+    name: 'Buyer guides from published treadmill specs',
+    itemListElement: [
+      { name: 'Best for small spaces', path: '/compare/best-for-small-spaces/' },
+      { name: 'Best for low ceilings', path: '/compare/best-for-low-ceilings/' },
+      { name: 'Best folding treadmills', path: '/compare/best-folding/' },
+      { name: 'Will it fit', path: '/will-it-fit/' },
+    ].map((item, i) => ({ '@type': 'ListItem', position: i + 1, name: item.name, url: SITE.url + item.path })),
   },
 ];
 const brandList = brands();
+const shop = models.slice(0, 6);
 ---
 <Base title="Treadmill specs and will it fit" description={desc} path="/" nav="home" og="/og/default.png" jsonld={jsonld}>
   <div class="wrap hero">
-    <p class="kicker">Manufacturer pages, read 1 November 2026</p>
-    <h1>Will this treadmill <em>fit the room</em> — and what did the maker actually print?</h1>
-    <p class="lede">Deck size, motor, user weight, unfolded and folded inches, step-up height, power, incline, and speed. Each figure links to the manufacturer page it came from. If that page is silent, the cell says “Not published by manufacturer.”</p>
-    <Byline />
-    <div class="lane-mark" aria-hidden="true"><i></i><i></i><i></i></div>
-    <div class="grid2">
-      <a class="card" href="/will-it-fit/">
-        <h2>Will it fit</h2>
-        <p>Enter the room, the ceiling, and a user height. The check adds only clearances the manufacturer published, and it says so when it adds none.</p>
-        <p class="go">Open the calculator</p>
-      </a>
-      <a class="card" href="/models/">
-        <h2>{models.length} models on file</h2>
-        <p>NordicTrack, Sole, Horizon, BowFlex, Peloton, Life Fitness, and LifeSpan. One row per published field.</p>
-        <p class="go">Browse models</p>
-      </a>
+    <div class="hero-grid">
+      <div>
+        <p class="kicker">Manufacturer pages, read 1 November 2026</p>
+        <h1>Will this treadmill <em>fit</em> — and where do you buy it?</h1>
+        <p class="lede">Deck, motor, weight, and footprint copied from the maker. Lists for small rooms, low ceilings, and folding models use only those inches. Amazon buttons sit on every model page. No prices.</p>
+        <div class="hero-ctas">
+          <a class="btn" href="/compare/best-for-small-spaces/">Small rooms</a>
+          <a class="btn" href="/compare/best-folding/">Folding</a>
+          <a class="btn ghost" href="/will-it-fit/">Will it fit</a>
+        </div>
+        <Byline />
+      </div>
+      <HeroArt />
     </div>
   </div>
   <section class="wrap">
+    <h2>Start with a buying question</h2>
+    <div class="grid3">
+      <a class="card" href="/compare/best-for-small-spaces/">
+        <p class="kicker">Floor area</p>
+        <h3>Best for small spaces</h3>
+        <p>Unfolded length times width, shortest footprint first. Clearance is called out on the model, not folded into the rank.</p>
+        <p class="go">Open the list</p>
+      </a>
+      <a class="card" href="/compare/best-for-low-ceilings/">
+        <p class="kicker">Machine height</p>
+        <h3>Best for low ceilings</h3>
+        <p>Shortest published machine height first, plus the ceiling rules a few makers actually print.</p>
+        <p class="go">Open the list</p>
+      </a>
+      <a class="card" href="/compare/best-folding/">
+        <p class="kicker">Folds, then area</p>
+        <h3>Best folding treadmills</h3>
+        <p>Only models the manufacturer says fold, ranked by published floor area. Not a ride test.</p>
+        <p class="go">Open the list</p>
+      </a>
+    </div>
+    <h2>Comparisons people run before they buy</h2>
+    <div class="grid3">
+      <a class="card" href="/compare/nordictrack-commercial-1750-vs-nordictrack-commercial-2450/">
+        <h3>Commercial 1750 vs 2450</h3>
+        <p>Same belt and fold on NordicTrack’s pages. Speed and height are where the published numbers split.</p>
+      </a>
+      <a class="card" href="/compare/sole-f80-vs-sole-f85/">
+        <h3>Sole F80 vs F85</h3>
+        <p>Motor, deck width, and unit measurements from Sole’s full specifications.</p>
+      </a>
+      <a class="card" href="/compare/peloton-tread-vision-vs-peloton-tread-plus-vision/">
+        <h3>Tread Vision vs Tread+</h3>
+        <p>Peloton’s current shop pages: belt, step-up, and the clearance each page prints.</p>
+      </a>
+    </div>
+    <h2>Models, with the Amazon button on the page</h2>
+    <div class="grid3">
+      {shop.map((m) => {
+        const link = linkFor(m.slug, m.searchQuery);
+        return (
+          <article class="card">
+            <h3><a href={modelPath(m)}>{m.name}</a></h3>
+            <p class="small">{m.deck.published ? m.deck.text : 'Running surface not published.'}</p>
+            <p><a href={link.href} rel={AFFILIATE_REL} target={AFFILIATE_TARGET}>{link.kind === 'product' ? 'View on Amazon' : 'Search Amazon'}</a></p>
+          </article>
+        );
+      })}
+    </div>
+    <p><a href="/models/">All {models.length} models</a></p>
     <h2>Brands</h2>
     <div class="grid3">
       {brandList.map((b) => (
         <a class="card" href={`/brands/${b.slug}/`}>
           <h3>{b.name}</h3>
           <p>{b.count} model{b.count === 1 ? '' : 's'} with a cited spec table.</p>
-          <p class="go">See {b.name}</p>
         </a>
       ))}
-    </div>
-    <h2>Lists from the verified inches</h2>
-    <div class="grid2">
-      <a class="card" href="/compare/best-for-small-spaces/">
-        <h3>Smallest published footprints</h3>
-        <p>Ranked by unfolded floor area, length times width, from the manufacturer dimensions. Not a review.</p>
-      </a>
-      <a class="card" href="/compare/best-for-low-ceilings/">
-        <h3>Lowest published machine heights</h3>
-        <p>Ranked by unfolded height. A short machine can still need more ceiling once a person is standing on the deck.</p>
-      </a>
     </div>
   </section>
 </Base>

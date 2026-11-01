@@ -9,6 +9,7 @@ const pages = [
   ['page-compare', 'Compare', 'Two models, the same fields, two sources.'],
   ['page-small-spaces', 'Small footprints', 'Ranked by published floor area.'],
   ['page-low-ceilings', 'Low ceilings', 'Published machine height, then the maker’s ceiling rule.'],
+  ['page-best-folding', 'Folding treadmills', 'Smallest published footprint among models that fold.'],
   ['page-how-we-verify', 'How we verify', 'A source URL on every row.'],
   ['page-about', 'About', 'Treadmill Specs editorial team.'],
   ['page-contact', 'Contact', 'contact@treadmillspecs.com'],

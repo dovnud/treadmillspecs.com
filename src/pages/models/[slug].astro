@@ -35,6 +35,7 @@ const rows = specRows(m);
       <p class="kicker">{m.brand}{m.sku ? ` · ${m.sku}` : ''}</p>
       <h1>{m.name}</h1>
       <p class="lede">{m.summary}</p>
+      <BuyBlock slug={m.slug} query={m.searchQuery} name={m.name} />
       <Byline />
     </div>
     {box && (
@@ -61,8 +62,14 @@ const rows = specRows(m);
         <ul>{m.notes.map((n) => <li>{n}</li>)}</ul>
       </>
     )}
-    <p><a href={m.productUrl} rel="noopener">Manufacturer page</a> · <a href={`/will-it-fit/?model=${m.slug}`}>Check this model in a room</a> · <a href={`/brands/${m.brandSlug}/`}>{m.brand} models</a></p>
-    <BuyBlock query={m.searchQuery} name={m.name} />
+    <p>
+      <a href={m.productUrl} rel="noopener">Manufacturer page</a>
+      · <a href={`/will-it-fit/?model=${m.slug}`}>Check this model in a room</a>
+      · <a href="/compare/best-for-small-spaces/">Small-room list</a>
+      · <a href="/compare/best-for-low-ceilings/">Low-ceiling list</a>
+      · <a href="/compare/best-folding/">Folding list</a>
+      · <a href={`/brands/${m.brandSlug}/`}>{m.brand} models</a>
+    </p>
     <h2>Questions the table can answer</h2>
     <FaqList items={faqs} />
     <ReminderForm modelName={m.name} modelSlug={m.slug} pagePath={path} />

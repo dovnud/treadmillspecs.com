@@ -15,10 +15,12 @@ const brandList = brands();
       <p class="foot-h">Brands</p>
       <ul>
         {brandList.map((b) => <li><a href={`/brands/${b.slug}/`}>{b.name}</a></li>)}
+        <li><a href="/compare/best-for-small-spaces/">Small rooms</a></li>
+        <li><a href="/compare/best-for-low-ceilings/">Low ceilings</a></li>
+        <li><a href="/compare/best-folding/">Folding treadmills</a></li>
         <li><a href="/models/">All models</a></li>
         <li><a href="/will-it-fit/">Will it fit</a></li>
-        <li><a href="/compare/best-for-small-spaces/">Small-space list</a></li>
-        <li><a href="/compare/best-for-low-ceilings/">Low-ceiling list</a></li>
+        <li><a href="/compare/">Compare two models</a></li>
       </ul>
     </div>
     <div>
@@ -36,6 +38,6 @@ const brandList = brands();
   </div>
   <div class="disclaimer wrap">
     <p>TreadmillSpecs.com is independent. It is not affiliated with NordicTrack, Sole, Horizon, BowFlex, Peloton, Life Fitness, LifeSpan, or Amazon. Product names are trademarks of their owners and are used here to identify the machines.</p>
-    <p>As an Amazon Associate I earn from qualifying purchases. The Associates tag is not in the links until it is set in the site configuration. No prices are shown. Specs were read from manufacturer pages on 1 November 2026.</p>
+    <p>As an Amazon Associate I earn from qualifying purchases. Amazon links use tag treadmillspecs-20. A direct product link is used only after the live Amazon title named that model. No prices are shown. Specs were read from manufacturer pages on 1 November 2026.</p>
   </div>
 </footer>

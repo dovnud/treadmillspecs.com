@@ -20,7 +20,7 @@ const jsonld = [
   { '@type': 'ItemList', itemListElement: ranked.map((row, i) => ({ '@type': 'ListItem', position: i + 1, name: row.m.name, url: SITE.url + modelPath(row.m) })) },
 ];
 ---
-<Base title="Smallest published treadmill footprints" description={desc} path={path} nav="compare" og="/og/page-small-spaces.png" jsonld={jsonld}>
+<Base title="Smallest published treadmill footprints" description={desc} path={path} nav="spaces" og="/og/page-small-spaces.png" jsonld={jsonld}>
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />

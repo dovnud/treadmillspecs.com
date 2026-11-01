@@ -1,13 +1,19 @@
 import { writeFileSync } from 'node:fs';
 import { models, pairs, brands, CHECKED } from '../src/data/models.ts';
-import { AMAZON_TAG, amazonSearchUrl } from '../src/config/affiliate.ts';
+import { AMAZON_TAG, ASINS, amazonProductUrl, amazonSearchUrl, linkFor } from '../src/config/affiliate.ts';
 
 const errors = [];
 if (CHECKED !== '2026-11-01') errors.push('CHECKED date drifted');
-if (AMAZON_TAG !== 'TODO-TAG') errors.push('AMAZON_TAG changed; confirm the tag is real before shipping it');
+if (AMAZON_TAG !== 'treadmillspecs-20') errors.push(`AMAZON_TAG is ${AMAZON_TAG}`);
 const sample = amazonSearchUrl('NordicTrack Commercial 1750 treadmill');
-if (AMAZON_TAG === 'TODO-TAG' && /[?&]tag=/.test(sample)) errors.push('placeholder tag leaked into a search URL');
+if (!sample.includes('tag=treadmillspecs-20')) errors.push('search URL missing tag');
 if (!sample.startsWith('https://www.amazon.com/s?k=')) errors.push('search URL shape');
+for (const [slug, row] of Object.entries(ASINS)) {
+  if (!models.some((m) => m.slug === slug)) errors.push(`ASIN key ${slug} is not a model`);
+  const href = amazonProductUrl(row.asin);
+  if (href !== `https://www.amazon.com/dp/${row.asin}?tag=treadmillspecs-20`) errors.push(`bad product url ${slug}`);
+  if (linkFor(slug, 'x').kind !== 'product') errors.push(`linkFor missed ${slug}`);
+}
 
 for (const m of models) {
   const fields = [m.deck, m.motor, m.maxUser, m.unfolded, m.folded, m.stepUp, m.power, m.incline, m.speed];
@@ -34,6 +40,7 @@ const dates = {
   '/compare/': CHECKED,
   '/compare/best-for-small-spaces/': CHECKED,
   '/compare/best-for-low-ceilings/': CHECKED,
+  '/compare/best-folding/': CHECKED,
   '/how-we-verify/': CHECKED,
   '/about/': CHECKED,
   '/contact/': CHECKED,

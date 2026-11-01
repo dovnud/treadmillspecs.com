@@ -3,11 +3,11 @@ interface Props { active?: string }
 const { active = '' } = Astro.props;
 const links = [
   ['/', 'Home', 'home'],
+  ['/compare/best-for-small-spaces/', 'Small rooms', 'spaces'],
+  ['/compare/best-for-low-ceilings/', 'Low ceilings', 'ceilings'],
+  ['/compare/best-folding/', 'Folding', 'folding'],
   ['/models/', 'Models', 'models'],
   ['/will-it-fit/', 'Will it fit', 'fit'],
-  ['/compare/', 'Compare', 'compare'],
-  ['/how-we-verify/', 'How we verify', 'verify'],
-  ['/about/', 'About', 'about'],
 ];
 ---
 <header class="site">
