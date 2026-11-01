@@ -1,0 +1,49 @@
+---
+import Base from '../../layouts/Base.astro';
+import Byline from '../../components/Byline.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import { models, modelPath, useBox } from '../../data/models';
+import { SITE } from '../../lib/site';
+import { crumbLd, webPageLd } from '../../lib/ld';
+
+const ranked = models
+  .map((m) => ({ m, box: useBox(m) }))
+  .filter((row): row is { m: typeof models[number]; box: { l: number; w: number; h: number } } => row.box != null)
+  .map((row) => ({ ...row, area: row.box.l * row.box.w }))
+  .sort((a, b) => a.area - b.area);
+const path = '/compare/best-for-small-spaces/';
+const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: 'Small spaces', path }];
+const desc = 'Treadmills ranked by published unfolded floor area, length times width. The list uses manufacturer dimensions only.';
+const jsonld = [
+  webPageLd('Treadmills with the smallest published footprints', path, desc, SITE.checked),
+  crumbLd(crumbs),
+  { '@type': 'ItemList', itemListElement: ranked.map((row, i) => ({ '@type': 'ListItem', position: i + 1, name: row.m.name, url: SITE.url + modelPath(row.m) })) },
+];
+---
+<Base title="Smallest published treadmill footprints" description={desc} path={path} nav="compare" og="/og/page-small-spaces.png" jsonld={jsonld}>
+  <div class="wrap">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>Smallest published footprints</h1>
+      <p class="lede">Sorted by unfolded length times width, in square inches, using the inches on each spec page. This is not a cushioning or motor ranking. Clearance the maker asks you to leave around the machine is not included in the area.</p>
+      <Byline />
+    </div>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>#</th><th>Model</th><th>Unfolded L × W × H</th><th>Floor area</th><th>Folds</th></tr></thead>
+        <tbody>
+          {ranked.map((row, i) => (
+            <tr>
+              <td>{i + 1}</td>
+              <td><a href={modelPath(row.m)}>{row.m.name}</a></td>
+              <td class="mono">{row.box.l}" × {row.box.w}" × {row.box.h}"</td>
+              <td class="mono">{Math.round(row.area)} in²</td>
+              <td>{row.m.folds === 'yes' ? 'Yes' : row.m.folds === 'no' ? 'No' : 'Not published'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted">Where two official sources disagree, the footprint used here is the larger published figure on each axis. That note is on the model page.</p>
+  </div>
+</Base>

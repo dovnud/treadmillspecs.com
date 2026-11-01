@@ -1,0 +1,63 @@
+---
+import Base from '../../layouts/Base.astro';
+import Byline from '../../components/Byline.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import { models } from '../../data/models';
+import { SITE } from '../../lib/site';
+import { crumbLd, webPageLd } from '../../lib/ld';
+
+const crumbs = [{ name: 'Compare', path: '/compare/' }];
+const desc = 'Compare two treadmills on the manufacturer figures only, or open the small-footprint and low-ceiling lists built from those inches.';
+const jsonld = [webPageLd('Compare treadmill specs', '/compare/', desc, SITE.checked), crumbLd(crumbs)];
+---
+<Base title="Compare treadmill specs" description={desc} path="/compare/" nav="compare" og="/og/page-compare.png" jsonld={jsonld}>
+  <div class="wrap">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>Compare</h1>
+      <p class="lede">Side-by-side pages repeat each model’s published value and its source. They do not score a winner.</p>
+      <Byline />
+    </div>
+    <form class="finder" id="pair-form">
+      <div class="finder-head">Two models <span>Same fields, two citations</span></div>
+      <div class="finder-body">
+        <div class="f-grid">
+          <div>
+            <label for="a">First</label>
+            <select id="a" name="a">{models.map((m) => <option value={m.slug}>{m.name}</option>)}</select>
+          </div>
+          <div>
+            <label for="b">Second</label>
+            <select id="b" name="b">{models.map((m, i) => <option value={m.slug} selected={i === 1}>{m.name}</option>)}</select>
+          </div>
+        </div>
+        <button class="f-btn" type="submit">Open the comparison</button>
+      </div>
+    </form>
+    <div class="grid2">
+      <a class="card" href="/compare/best-for-small-spaces/">
+        <h2>Smallest footprints</h2>
+        <p>Unfolded length times width, lowest first. Only models with both dimensions published.</p>
+      </a>
+      <a class="card" href="/compare/best-for-low-ceilings/">
+        <h2>Lowest machine heights</h2>
+        <p>Unfolded height, shortest first, plus the ceiling rules a few makers actually print.</p>
+      </a>
+    </div>
+  </div>
+</Base>
+<script>
+  import { models } from '../../data/models';
+  const form = document.getElementById('pair-form') as HTMLFormElement;
+  form.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const data = new FormData(form);
+    const a = String(data.get('a'));
+    const b = String(data.get('b'));
+    if (a === b) return;
+    const ia = models.findIndex((m) => m.slug === a);
+    const ib = models.findIndex((m) => m.slug === b);
+    const slug = ia < ib ? `${a}-vs-${b}` : `${b}-vs-${a}`;
+    location.href = `/compare/${slug}/`;
+  });
+</script>

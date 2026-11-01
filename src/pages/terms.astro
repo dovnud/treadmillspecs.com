@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import Byline from '../components/Byline.astro';
+import Crumbs from '../components/Crumbs.astro';
+import { SITE } from '../lib/site';
+import { crumbLd, webPageLd } from '../lib/ld';
+
+const crumbs = [{ name: 'Terms', path: '/terms/' }];
+const desc = 'Terms of use for TreadmillSpecs.com. Specs are transcriptions of manufacturer pages. The manufacturer manual governs the machine.';
+const jsonld = [webPageLd('Terms of use', '/terms/', desc, SITE.checked), crumbLd(crumbs)];
+---
+<Base title="Terms of use" description={desc} path="/terms/" og="/og/page-terms.png" jsonld={jsonld}>
+  <div class="wrap prose">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>Terms</h1>
+      <Byline />
+    </div>
+    <p>TreadmillSpecs.com is an information site. The tables are transcriptions of manufacturer pages and manuals as of the checked date on each page. Manufacturers change products. Measure your room and read the manual that comes with the machine before you buy or assemble one.</p>
+    <p>The will-it-fit result is a comparison of the numbers you enter with the numbers those pages published. It is not a structural, electrical, or medical assessment. A pass does not mean a doorway, a turn on a stair, or a circuit in your house will work.</p>
+    <p>Product names are used to identify machines. They are trademarks of their owners. The site is not affiliated with those companies or with Amazon.</p>
+    <p>Amazon links may be affiliate links once the Associates tag in the site configuration is set. Until then they are ordinary search links. See the <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p>
+    <p>Questions: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+  </div>
+</Base>

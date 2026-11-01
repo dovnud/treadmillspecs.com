@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+import Byline from '../components/Byline.astro';
+import Crumbs from '../components/Crumbs.astro';
+import { SITE } from '../lib/site';
+import { crumbLd, webPageLd } from '../lib/ld';
+
+const crumbs = [{ name: 'How we verify', path: '/how-we-verify/' }];
+const desc = 'How TreadmillSpecs.com checks treadmill specs: manufacturer pages and manuals only, a citation on every row, and no estimated inches.';
+const jsonld = [webPageLd('How we verify treadmill specs', '/how-we-verify/', desc, SITE.checked), crumbLd(crumbs)];
+---
+<Base title="How we verify treadmill specs" description={desc} path="/how-we-verify/" nav="verify" og="/og/page-how-we-verify.png" jsonld={jsonld}>
+  <div class="wrap prose">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>How we verify specs</h1>
+      <Byline />
+    </div>
+    <p>A number is printed as a fact only when a manufacturer page or that manufacturer’s manual states it. The row links the URL and the date that page was read. The date on this site, 1 November 2026, is that read date. It is not a rolling “updated” stamp.</p>
+    <h2>What counts as a source</h2>
+    <ul>
+      <li>The current product page on the manufacturer’s own site, including specification tables that load in the page.</li>
+      <li>The owner’s manual PDF hosted by that manufacturer, when a product page does not state power or clearance.</li>
+    </ul>
+    <p>Retailer listings, reviews, and other spec roundups are not sources. A review quoted on a manufacturer shop page is still a review. The Life Fitness Run CX page includes one that says the machine does not fold. Folded size stays “Not published by manufacturer” because the specifications table does not say it.</p>
+    <h2>What we do when a field is missing</h2>
+    <p>The cell says “Not published by manufacturer.” Deck thickness is not treated as step-up height. Incline “levels” are not converted into a percent grade. Continuous horsepower is named only when the manufacturer uses that term. NordicTrack’s CHP footnote is printed with the motor, including their statement that the rating is a lab figure and not ordinary-use horsepower.</p>
+    <h2>When two official figures disagree</h2>
+    <p>Both are shown. The BowFlex T9 product page and the BowFlex T9 owner’s manual do not print the same assembled length and height. The fit check uses the larger published number on each axis and says so. The NordicTrack T Series 6.5 S URL currently publishes SKU NTL15425, the same SKU as the T Series 10. Folded inches are cited on the T Series 10 page, where they are printed, and are not copied onto the 6.5 S table as if that URL stated them.</p>
+    <h2>Clearance and ceiling</h2>
+    <p>ASTM F2115 is the motorized-treadmill specification. The standard text is not quoted here, because it is not freely published in full and we will not fill clearance from memory. Clearance inches come from the manual or product page that states them: Sole’s 3 1/2 feet behind the deck on the 2026 F63, F65, F80, and F85 manuals; BowFlex’s “user height + 20.75 inches” ceiling line; Peloton’s clearance and ceiling sentences on the Tread Vision and Tread+ Vision shop pages. Where a page prints two rear clearances, the calculator keeps both and requires the larger one.</p>
+    <p>Incline rise in inches is not estimated from percent grade and deck length. If the maker did not publish a ceiling rule, and did publish step-up height, the extra ceiling check is step-up height plus the height you type. That assumption is written on the result.</p>
+    <h2>Prices and reminders</h2>
+    <p>No prices are shown. Amazon links are searches, not verified product pages, until an ASIN has been checked on a live Amazon page. The reminder form stores an email request. It does not send mail.</p>
+    <p>Corrections: <a href="/contact/">contact</a>.</p>
+  </div>
+</Base>

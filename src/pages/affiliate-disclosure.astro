@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import Byline from '../components/Byline.astro';
+import Crumbs from '../components/Crumbs.astro';
+import { AMAZON_DISCLOSURE, AMAZON_TAG } from '../config/affiliate';
+import { SITE } from '../lib/site';
+import { crumbLd, webPageLd } from '../lib/ld';
+
+const crumbs = [{ name: 'Affiliate disclosure', path: '/affiliate-disclosure/' }];
+const desc = 'Amazon Associates disclosure for TreadmillSpecs.com. The tracking tag is one placeholder constant and is omitted from links until it is set. No prices are shown.';
+const jsonld = [webPageLd('Affiliate disclosure', '/affiliate-disclosure/', desc, SITE.checked), crumbLd(crumbs)];
+---
+<Base title="Affiliate disclosure" description={desc} path="/affiliate-disclosure/" og="/og/page-affiliate-disclosure.png" jsonld={jsonld}>
+  <div class="wrap prose">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>Affiliate disclosure</h1>
+      <Byline />
+    </div>
+    <p>{AMAZON_DISCLOSURE}</p>
+    <p>TreadmillSpecs.com is written to take part in the Amazon Associates Program. Amazon is the only affiliate program prepared on this site. Links are built in one configuration file. The tag value today is <span class="mono">{AMAZON_TAG}</span>. While it is still that placeholder, search links are built with no tag parameter. A direct product link is used only after the live Amazon page for that ASIN has been checked. No ASIN is on the site yet, so every Amazon button is a search.</p>
+    <p>We do not show prices. A search result is not a promise that the first listing is the treadmill on the spec page.</p>
+    <p>Editorial rows are filled before a shopping link is added, and a missing spec is not filled in because a retailer page mentions one.</p>
+  </div>
+</Base>

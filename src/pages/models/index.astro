@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import Byline from '../../components/Byline.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import { models, modelPath, useBox } from '../../data/models';
+import { SITE } from '../../lib/site';
+import { crumbLd, webPageLd } from '../../lib/ld';
+
+const crumbs = [{ name: 'Models', path: '/models/' }];
+const desc = 'Treadmill spec pages for NordicTrack, Sole, Horizon, BowFlex, Peloton, Life Fitness, and LifeSpan. Every number cites the manufacturer page it came from.';
+const jsonld = [webPageLd('Treadmill models', '/models/', desc, SITE.checked), crumbLd(crumbs)];
+---
+<Base title="Treadmill models and specs" description={desc} path="/models/" nav="models" og="/og/page-models.png" jsonld={jsonld}>
+  <div class="wrap">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>Models</h1>
+      <p class="lede">Each page is one machine. The table is what the manufacturer published, plus the URL and the date we read it.</p>
+      <Byline />
+    </div>
+    <div class="grid2">
+      {models.map((m) => {
+        const box = useBox(m);
+        return (
+          <a class="card" href={modelPath(m)}>
+            <p class="kicker">{m.brand}{m.sku ? ` · ${m.sku}` : ''}</p>
+            <h2>{m.name}</h2>
+            <p>{m.deck.published ? m.deck.text : 'Running surface not published.'}</p>
+            <p class="small muted">{box ? `Footprint ${box.l}" × ${box.w}" × ${box.h}"` : 'Footprint not published.'} · {m.maxUser.text}</p>
+            <p class="go">Spec table</p>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</Base>

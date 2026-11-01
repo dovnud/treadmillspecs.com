@@ -1,0 +1,68 @@
+---
+import Base from '../layouts/Base.astro';
+import Byline from '../components/Byline.astro';
+import { models, modelPath, brands } from '../data/models';
+import { SITE } from '../lib/site';
+import { crumbLd, webPageLd } from '../lib/ld';
+
+const desc = 'Treadmill deck size, motor, user weight, and footprint from manufacturer pages, plus a room check that uses only those published inches.';
+const jsonld = [
+  webPageLd('Treadmill specs and will-it-fit', '/', desc, SITE.checked),
+  crumbLd([]),
+  {
+    '@type': 'ItemList',
+    name: 'Treadmill models with manufacturer specs',
+    itemListElement: models.map((m, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: m.name,
+      url: SITE.url + modelPath(m),
+    })),
+  },
+];
+const brandList = brands();
+---
+<Base title="Treadmill specs and will it fit" description={desc} path="/" nav="home" og="/og/default.png" jsonld={jsonld}>
+  <div class="wrap hero">
+    <p class="kicker">Manufacturer pages, read 1 November 2026</p>
+    <h1>Will this treadmill <em>fit the room</em> — and what did the maker actually print?</h1>
+    <p class="lede">Deck size, motor, user weight, unfolded and folded inches, step-up height, power, incline, and speed. Each figure links to the manufacturer page it came from. If that page is silent, the cell says “Not published by manufacturer.”</p>
+    <Byline />
+    <div class="lane-mark" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="grid2">
+      <a class="card" href="/will-it-fit/">
+        <h2>Will it fit</h2>
+        <p>Enter the room, the ceiling, and a user height. The check adds only clearances the manufacturer published, and it says so when it adds none.</p>
+        <p class="go">Open the calculator</p>
+      </a>
+      <a class="card" href="/models/">
+        <h2>{models.length} models on file</h2>
+        <p>NordicTrack, Sole, Horizon, BowFlex, Peloton, Life Fitness, and LifeSpan. One row per published field.</p>
+        <p class="go">Browse models</p>
+      </a>
+    </div>
+  </div>
+  <section class="wrap">
+    <h2>Brands</h2>
+    <div class="grid3">
+      {brandList.map((b) => (
+        <a class="card" href={`/brands/${b.slug}/`}>
+          <h3>{b.name}</h3>
+          <p>{b.count} model{b.count === 1 ? '' : 's'} with a cited spec table.</p>
+          <p class="go">See {b.name}</p>
+        </a>
+      ))}
+    </div>
+    <h2>Lists from the verified inches</h2>
+    <div class="grid2">
+      <a class="card" href="/compare/best-for-small-spaces/">
+        <h3>Smallest published footprints</h3>
+        <p>Ranked by unfolded floor area, length times width, from the manufacturer dimensions. Not a review.</p>
+      </a>
+      <a class="card" href="/compare/best-for-low-ceilings/">
+        <h3>Lowest published machine heights</h3>
+        <p>Ranked by unfolded height. A short machine can still need more ceiling once a person is standing on the deck.</p>
+      </a>
+    </div>
+  </section>
+</Base>

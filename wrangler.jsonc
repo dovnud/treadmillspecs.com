@@ -1,0 +1,25 @@
+{
+  // Cloudflare Pages project for treadmillspecs.com.
+  // Build command: npm run build. Node 22. Output directory is dist.
+  // TURNSTILE_SECRET is a Pages secret. It is not stored in this file.
+  //
+  // D1 could not be created (account database limit). Do not invent a database_id.
+  // When a database exists, add this binding in the Pages dashboard (name DB)
+  // and, if you deploy with Wrangler, uncomment the block below with the real id,
+  // then apply migrations/0001_subscribers.sql.
+  // The subscribe function returns a friendly message when env.DB is missing.
+  "name": "treadmillspecs",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-11-01",
+  "vars": {
+    "NODE_VERSION": "22"
+  }
+  // "d1_databases": [
+  //   {
+  //     "binding": "DB",
+  //     "database_name": "treadmillspecs-subscribers",
+  //     "database_id": "<create in the Cloudflare dashboard>",
+  //     "migrations_dir": "migrations"
+  //   }
+  // ]
+}

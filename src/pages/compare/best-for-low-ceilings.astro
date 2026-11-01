@@ -1,0 +1,58 @@
+---
+import Base from '../../layouts/Base.astro';
+import Byline from '../../components/Byline.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import { models, modelPath, useBox } from '../../data/models';
+import { SITE } from '../../lib/site';
+import { crumbLd, webPageLd } from '../../lib/ld';
+
+const ranked = models
+  .map((m) => ({ m, box: useBox(m) }))
+  .filter((row): row is { m: typeof models[number]; box: { l: number; w: number; h: number } } => row.box != null)
+  .sort((a, b) => a.box.h - b.box.h);
+const withRule = models.filter((m) => m.clearance && (m.clearance.userPlusIn != null || m.clearance.minCeilingIn != null));
+const path = '/compare/best-for-low-ceilings/';
+const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: 'Low ceilings', path }];
+const desc = 'Treadmills ranked by published unfolded height, plus the ceiling rules manufacturers actually print.';
+const jsonld = [
+  webPageLd('Treadmills with the lowest published machine height', path, desc, SITE.checked),
+  crumbLd(crumbs),
+  { '@type': 'ItemList', itemListElement: ranked.map((row, i) => ({ '@type': 'ListItem', position: i + 1, name: row.m.name, url: SITE.url + modelPath(row.m) })) },
+];
+---
+<Base title="Lowest published treadmill heights" description={desc} path={path} nav="compare" og="/og/page-low-ceilings.png" jsonld={jsonld}>
+  <div class="wrap">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>Lowest published machine heights</h1>
+      <p class="lede">Sorted by unfolded height. A short machine is not the same thing as a low ceiling while someone is standing on the deck. Use the ceiling rules below, and the will-it-fit check, for that.</p>
+      <Byline />
+    </div>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>#</th><th>Model</th><th>Unfolded height</th><th>Step-up</th></tr></thead>
+        <tbody>
+          {ranked.map((row, i) => (
+            <tr>
+              <td>{i + 1}</td>
+              <td><a href={modelPath(row.m)}>{row.m.name}</a></td>
+              <td class="mono">{row.box.h}"</td>
+              <td>{row.m.stepUp.published ? row.m.stepUp.text : 'Not published by manufacturer'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <h2>Ceiling rules the manufacturer printed</h2>
+    <p>These are not estimated from incline percent. If a model is missing, its page did not print a ceiling rule.</p>
+    <div class="grid2">
+      {withRule.map((m) => (
+        <article class="card">
+          <h3><a href={modelPath(m)}>{m.name}</a></h3>
+          <p>{m.clearance?.summary}</p>
+          <p class="small"><a href={m.clearance?.cite.url} rel="noopener">{m.clearance?.cite.where}</a></p>
+        </article>
+      ))}
+    </div>
+  </div>
+</Base>

@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import Byline from '../components/Byline.astro';
+import Crumbs from '../components/Crumbs.astro';
+import { SITE } from '../lib/site';
+import { crumbLd, webPageLd } from '../lib/ld';
+
+const crumbs = [{ name: 'About', path: '/about/' }];
+const desc = 'TreadmillSpecs.com is an independent reference for manufacturer treadmill specs and a room-fit check. Pages are by the Treadmill Specs editorial team.';
+const jsonld = [
+  webPageLd('About TreadmillSpecs.com', '/about/', desc, SITE.checked),
+  crumbLd(crumbs),
+  { '@type': 'AboutPage', name: 'About TreadmillSpecs.com', url: SITE.url + '/about/' },
+  { '@type': 'Organization', name: SITE.publisher, url: SITE.url + '/', email: SITE.email },
+];
+---
+<Base title="About TreadmillSpecs.com" description={desc} path="/about/" nav="about" og="/og/page-about.png" jsonld={jsonld}>
+  <div class="wrap prose">
+    <div class="pagehead">
+      <Crumbs crumbs={crumbs} />
+      <h1>About</h1>
+      <Byline />
+    </div>
+    <p>TreadmillSpecs.com publishes treadmill specifications from manufacturer pages, and a will-it-fit check that uses those inches. It is for someone measuring a spare room before a treadmill arrives, not for a training plan.</p>
+    <h2>Who publishes this site</h2>
+    <p>The site is published by Treadmill Specs, an independent reference. Pages carry the byline “the Treadmill Specs editorial team.” We do not put an individual author name on a page that is a transcription of a manufacturer table. The source link is the thing to judge.</p>
+    <h2>What the date means</h2>
+    <p>Checked 1 November 2026 means that is when the cited pages and manuals were read for this version of the tables. The date does not move because the layout changed.</p>
+    <h2>How the site is funded</h2>
+    <p>The site is free to read. Amazon search links are prepared for the Amazon Associates program. The tracking tag is a single placeholder and is left off the URLs until it is issued. That does not change a specification. Details are in the <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p>
+    <h2>What this site is not</h2>
+    <p>Not a dealer, not a service shop, and not affiliated with any treadmill brand or with Amazon. The manual that shipped with the machine remains the authority for assembly and use.</p>
+    <p>Write to <a href={`mailto:${SITE.email}`}>{SITE.email}</a> or use the <a href="/contact/">contact page</a>.</p>
+  </div>
+</Base>

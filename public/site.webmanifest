@@ -1,0 +1,10 @@
+{
+  "name": "TreadmillSpecs.com",
+  "short_name": "TreadmillSpecs",
+  "description": "Manufacturer-sourced treadmill specs and a will-it-fit check.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#f3f1ea",
+  "theme_color": "#14241b",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

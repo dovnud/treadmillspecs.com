@@ -1,0 +1,94 @@
+---
+import { TURNSTILE_SITEKEY } from '../config/turnstile';
+interface Props { modelName: string; modelSlug: string; pagePath: string }
+const { modelName, modelSlug, pagePath } = Astro.props;
+const CONSENT = "We'll only store this email for a price-drop reminder request on this model. Nothing is sent.";
+---
+<section class="block" id="price-reminder" aria-labelledby="price-reminder-title">
+  <h2 id="price-reminder-title">Store a price-drop reminder request</h2>
+  <p>Save an email against the {modelName}. This form stores the request. It does not send email, and it is not a newsletter.</p>
+  <form class="stack" id="reminder-form" action="/api/subscribe" method="post" data-sitekey={TURNSTILE_SITEKEY}>
+    <label for="req-email">Email</label>
+    <input id="req-email" name="email" type="email" autocomplete="email" maxlength="254" required />
+    <p class="consent">{CONSENT}</p>
+    <label class="check"><input type="checkbox" name="consent" value="yes" required /> Store this request under that sentence.</label>
+    <input type="hidden" name="consent_text" value={CONSENT} />
+    <input type="hidden" name="purpose" value="price-drop" />
+    <input type="hidden" name="page_url" value={pagePath} />
+    <input type="hidden" name="model" value={modelName} />
+    <input type="hidden" name="model_slug" value={modelSlug} />
+    <div class="hp" aria-hidden="true">
+      <label for="req-fax">Fax number</label>
+      <input id="req-fax" name="fax_number" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+    <div data-turnstile></div>
+    <button class="primary" type="submit">Store this request</button>
+    <p class="status" data-status role="status" aria-live="polite"></p>
+  </form>
+  <noscript><p class="small muted">Storing a request needs JavaScript so the bot check can run. Nothing is sent until that check finishes.</p></noscript>
+</section>
+<script is:inline>
+(function () {
+  var form = document.getElementById('reminder-form');
+  if (!form || !window.fetch) return;
+  var status = form.querySelector('[data-status]');
+  var button = form.querySelector('button[type="submit"]');
+  var sitekey = form.getAttribute('data-sitekey') || '';
+  var widgetId = null;
+  function setStatus(msg, kind) {
+    status.textContent = msg;
+    status.className = 'status' + (kind ? ' ' + kind : '');
+  }
+  function loadTurnstile() {
+    if (window.turnstile) return Promise.resolve();
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      s.async = true;
+      s.onload = function () { resolve(); };
+      s.onerror = function () { reject(new Error('load')); };
+      document.head.appendChild(s);
+    });
+  }
+  function token() {
+    if (!sitekey) return Promise.resolve('');
+    return loadTurnstile().then(function () {
+      return new Promise(function (resolve, reject) {
+        var el = form.querySelector('[data-turnstile]');
+        if (widgetId !== null && window.turnstile.remove) {
+          window.turnstile.remove(widgetId);
+          widgetId = null;
+        }
+        widgetId = window.turnstile.render(el, {
+          sitekey: sitekey,
+          size: 'invisible',
+          execution: 'execute',
+          action: 'subscribe',
+          callback: function (t) { resolve(t || ''); },
+          'error-callback': function () { reject(new Error('verify')); },
+          'timeout-callback': function () { reject(new Error('timeout')); }
+        });
+        window.turnstile.execute(widgetId);
+      });
+    });
+  }
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    button.disabled = true;
+    setStatus('Storing the request…', '');
+    token().then(function (t) {
+      var fd = new FormData(form);
+      if (t) fd.set('cf-turnstile-response', t);
+      return fetch('/api/subscribe', { method: 'POST', body: fd, headers: { accept: 'application/json' } });
+    }).then(function (res) {
+      return res.json().then(function (data) { return { ok: res.ok, data: data }; }, function () { return { ok: false, data: {} }; });
+    }).then(function (out) {
+      var msg = (out.data && out.data.message) || (out.ok ? 'Request stored.' : 'Could not store the request.');
+      setStatus(msg, out.ok ? 'ok' : 'bad');
+    }).catch(function (err) {
+      var verify = err && (err.message === 'load' || err.message === 'verify' || err.message === 'timeout');
+      setStatus(verify ? 'Verification did not complete. Reload the page and try again.' : 'Could not store the request. You can try again.', 'bad');
+    }).then(function () { button.disabled = false; });
+  });
+})();
+</script>

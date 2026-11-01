@@ -1,0 +1,24 @@
+---
+interface Props { active?: string }
+const { active = '' } = Astro.props;
+const links = [
+  ['/', 'Home', 'home'],
+  ['/models/', 'Models', 'models'],
+  ['/will-it-fit/', 'Will it fit', 'fit'],
+  ['/compare/', 'Compare', 'compare'],
+  ['/how-we-verify/', 'How we verify', 'verify'],
+  ['/about/', 'About', 'about'],
+];
+---
+<header class="site">
+  <div class="head-in wrap">
+    <a class="brand" href="/">Treadmill<span>Specs</span><small>Deck, motor, footprint</small></a>
+    <nav class="main" aria-label="Main">
+      <ul>
+        {links.map(([href, label, key]) => (
+          <li><a href={href} aria-current={active === key ? 'page' : undefined}>{label}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
