@@ -1,8 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import { brands, models, modelPath } from '../../data/models';
+import { brandCopy } from '../../data/brand-copy';
+import { comparisonCopy } from '../../data/comparison-copy';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
@@ -11,9 +12,12 @@ export function getStaticPaths() {
 }
 const { brand } = Astro.props;
 const list = models.filter((m) => m.brandSlug === brand.slug);
+const copy = brandCopy[brand.slug];
 const path = `/brands/${brand.slug}/`;
 const crumbs = [{ name: brand.name, path }];
-const desc = `${brand.name} treadmill specs cited from manufacturer pages: ${list.map((m) => m.name.replace(brand.name + ' ', '')).join(', ')}.`;
+const slugs = new Set(list.map((m) => m.slug));
+const related = comparisonCopy.filter((item) => item.slug.split('-vs-').every((slug) => slugs.has(slug)));
+const desc = copy?.lede ?? `${brand.name} treadmill specifications from each model’s manufacturer page.`;
 const jsonld = [
   webPageLd(`${brand.name} treadmill specs`, path, desc, SITE.checked),
   crumbLd(crumbs),
@@ -21,21 +25,53 @@ const jsonld = [
 ];
 ---
 <Base title={`${brand.name} treadmill specs`} description={desc} path={path} nav="models" og={`/og/brand-${brand.slug}.png`} jsonld={jsonld}>
-  <div class="wrap">
+  <div class="wrap prose">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>{brand.name}</h1>
-      <p class="lede">{list.length} model{list.length === 1 ? '' : 's'} with a spec table. Figures are from each model’s manufacturer page, checked 1 November 2026.</p>
-      <Byline />
+      <h1>{brand.name} treadmill specs</h1>
+      <p class="lede">{copy?.lede}</p>
     </div>
-    <div class="grid2">
-      {list.map((m) => (
-        <a class="card" href={modelPath(m)}>
-          <h2>{m.name}</h2>
-          <p>{m.summary}</p>
-          <p class="go">Open the spec table</p>
-        </a>
-      ))}
+    {copy?.note.trim().split(/\n\n+/).map((paragraph) => <p>{paragraph}</p>)}
+    <h2>Specifications side by side</h2>
+    <p>Each cell is the text on that model’s page. A field the maker did not print stays “Not published by manufacturer.” Open the model for the citation and the room notes.</p>
+    <div class="tblwrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Running surface</th>
+            <th>Motor</th>
+            <th>Max user</th>
+            <th>Unfolded</th>
+            <th>Folds</th>
+          </tr>
+        </thead>
+        <tbody>
+          {list.map((m) => (
+            <tr>
+              <td><a href={modelPath(m)}>{m.name}</a></td>
+              <td class={m.deck.published ? undefined : 'unpub'}>{m.deck.text}</td>
+              <td class={m.motor.published ? undefined : 'unpub'}>{m.motor.text}</td>
+              <td>{m.maxUser.text}</td>
+              <td>{m.unfolded.text}</td>
+              <td>{m.folds === 'yes' ? `Yes. ${m.folded.text}` : m.folds === 'no' ? m.folded.text : m.folded.text}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
+    {related.length > 0 && (
+      <>
+        <h2>Comparisons inside {brand.name}</h2>
+        <ul>
+          {related.map((item) => {
+            const [a, b] = item.slug.split('-vs-');
+            const left = list.find((m) => m.slug === a);
+            const right = list.find((m) => m.slug === b);
+            return <li><a href={`/compare/${item.slug}/`}>{left?.name} vs {right?.name}</a>. {item.summary}</li>;
+          })}
+        </ul>
+      </>
+    )}
   </div>
 </Base>

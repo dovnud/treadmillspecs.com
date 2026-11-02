@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import { models, modelPath, useBox, storedBox } from '../../data/models';
 import { linkFor, AFFILIATE_REL, AFFILIATE_TARGET } from '../../config/affiliate';
@@ -27,8 +26,7 @@ const jsonld = [
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>Best folding treadmills</h1>
-      <p class="lede">“Best” on this page means the smallest published unfolded floor area among machines the manufacturer says fold. It is not a cushion score, a motor test, or a price ranking. We do not publish an “under $X” list: this site does not print prices, and there is no dated manufacturer price table behind a cutoff.</p>
-      <Byline />
+      <p class="lede">“Best” on this page means the smallest published unfolded floor area among machines the manufacturer says fold. It is not a cushion score, a motor test, or a price ranking. This site does not print prices, and it does not publish a price cutoff.</p>
     </div>
     <div class="tblwrap">
       <table>
@@ -51,7 +49,11 @@ const jsonld = [
         </tbody>
       </table>
     </div>
-    <p class="small muted">Models whose fold status is unpublished, including the T Series 6.5 S URL and the Sole TT8, are left off this list. The X16 and X24 pages say they do not fold.</p>
+    <div class="prose">
+      <h2>What “folds” required</h2>
+      <p>A model is on this list only when its own page says it folds and prints a folded size the rank can show. The NordicTrack X16 and X24 spec strips say Foldable: No, so they are off the list even though their floor is shorter than some folders. The T Series 6.5 S URL does not print folded dimensions, even though the T Series 10 page for the same SKU does. The Sole TT8 full specifications do not list a folded size. The Life Fitness Run CX table does not either. A review on that shop page is not used as a folding row.</p>
+      <p>Folding usually shortens the length and raises the height. Horizon’s 7.0 AT barely changes height (67 inches open, 68 folded) while cutting length from 76 to 44. Sole’s F63 goes from 52 inches open to 71 inches folded. Measure the closet against the folded height, not against the open height that won the rank. The smallest open floor here is the {ranked[0]?.m.name}, at {ranked[0] ? `${ranked[0].box.l} by ${ranked[0].box.w} inches` : 'the top of the table'}. Rear clearance from a manual is still extra floor while the machine is in use, and it is not inside this area.</p>
+    </div>
     <p><a href="/compare/best-for-small-spaces/">All footprints, including non-folding</a> · <a href="/will-it-fit/">Check a room</a></p>
   </div>
 </Base>

@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
@@ -14,12 +13,16 @@ const jsonld = [webPageLd('Terms of use', '/terms/', desc, SITE.checked), crumbL
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>Terms</h1>
-      <Byline />
     </div>
-    <p>TreadmillSpecs.com is an information site. The tables are transcriptions of manufacturer pages and manuals as of the checked date on each page. Manufacturers change products. Measure your room and read the manual that comes with the machine before you buy or assemble one.</p>
-    <p>The will-it-fit result is a comparison of the numbers you enter with the numbers those pages published. It is not a structural, electrical, or medical assessment. A pass does not mean a doorway, a turn on a stair, or a circuit in your house will work.</p>
-    <p>Product names are used to identify machines. They are trademarks of their owners. The site is not affiliated with those companies or with Amazon.</p>
-    <p>Amazon links are affiliate links (tag treadmillspecs-20). See the <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p>
+    <p>TreadmillSpecs.com is an information site. The tables are transcriptions of manufacturer pages and manuals as of the read date on the specification rows, 1 November 2026. Manufacturers change products. Measure your room and read the manual that comes with the machine before you buy or assemble one.</p>
+    <h2>The tables</h2>
+    <p>A number is a claim about what a cited page printed, not a promise that every unit in a warehouse matches it. When two official sources disagree, both are shown and the fit check uses the larger figure on each axis. A cell that says “Not published by manufacturer” is an absence, not a zero and not an estimate. Do not rely on this site to fill a clearance, a horsepower, a warranty length, or a price that the maker did not print in the section we transcribed.</p>
+    <h2>The room check</h2>
+    <p>The will-it-fit result compares the numbers you enter with the numbers those pages published. It is not a structural, electrical, or medical assessment. A pass does not mean a doorway, a turn on a stair, a circuit in your house, or a floor loading will work. Clearances are added only when the manufacturer printed them, and they stay on the machine’s length and width rather than being swapped. Incline rise in inches is not calculated from percent grade and deck length.</p>
+    <h2>Shopping links</h2>
+    <p>Amazon links are affiliate links, tag treadmillspecs-20. A direct product link is used only for a listing whose live title named that model. A search link is not a promise that the first result is the treadmill on the spec page. Prices are not shown. See the <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p>
+    <h2>Names and independence</h2>
+    <p>Product names identify machines. They are trademarks of their owners. The site is not affiliated with those companies or with Amazon. Nothing here is an offer to sell a treadmill.</p>
     <p>Questions: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
   </div>
 </Base>

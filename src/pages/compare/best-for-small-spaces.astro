@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import { models, modelPath, useBox } from '../../data/models';
 import { SITE } from '../../lib/site';
@@ -26,7 +25,6 @@ const jsonld = [
       <Crumbs crumbs={crumbs} />
       <h1>Smallest published footprints</h1>
       <p class="lede">Sorted by unfolded length times width, in square inches, using the inches on each spec page. This is not a cushioning or motor ranking. Clearance the maker asks you to leave around the machine is not included in the area.</p>
-      <Byline />
     </div>
     <div class="tblwrap">
       <table>
@@ -44,6 +42,11 @@ const jsonld = [
         </tbody>
       </table>
     </div>
-    <p class="small muted">Where two official sources disagree, the footprint used here is the larger published figure on each axis. That note is on the model page.</p>
+    <div class="prose">
+      <h2>How to use the rank</h2>
+      <p>The top of the list is the smallest chassis, not the smallest room you must reserve. Sole’s 2026 F63, F65, F80, and F85 manuals each require 3 1/2 feet behind the treadmill, and that 42 inches is not in the area column. Peloton’s Tread Vision page prints 24 inches on each side and in front and up to 79 inches behind, so a 68 by 33 inch machine still wants a long wall. BowFlex does not print a floor border. It prints a ceiling rule instead, which this floor ranking ignores.</p>
+      <p>Where two official sources disagree, the footprint used here is the larger published figure on each axis. That is why the BowFlex T9 is measured at 78 inches long: the product page prints 77.2 and the owner’s manual prints 78. The model page shows both sets. Folding changes storage, not this rank. Open the folding list if you need the stored size, and the will-it-fit check if you have a room measurement.</p>
+      <p>Belt width and user weight are not in the sort. A short floor with a 20 inch belt and a 300 lb cap can outrank a longer 22 inch belt with a 400 lb cap. Read the model page before you treat a high rank as the right machine. The {ranked[0]?.m.name} leads this list at {ranked[0] ? `${ranked[0].box.l} by ${ranked[0].box.w} inches (${Math.round(ranked[0].area)} square inches)` : 'the smallest published floor'}.</p>
+    </div>
   </div>
 </Base>

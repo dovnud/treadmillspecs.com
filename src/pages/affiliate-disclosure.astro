@@ -1,26 +1,35 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
-import { AMAZON_DISCLOSURE, AMAZON_TAG } from '../config/affiliate';
+import { AMAZON_DISCLOSURE, AMAZON_TAG, ASINS } from '../config/affiliate';
+import { models } from '../data/models';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
 
 const crumbs = [{ name: 'Affiliate disclosure', path: '/affiliate-disclosure/' }];
 const desc = 'Amazon Associates disclosure for TreadmillSpecs.com. Links use tag treadmillspecs-20. Direct product links are only for ASINs checked on a live Amazon page. No prices are shown.';
 const jsonld = [webPageLd('Affiliate disclosure', '/affiliate-disclosure/', desc, SITE.checked), crumbLd(crumbs)];
+const verified = Object.entries(ASINS).map(([slug, row]) => ({
+  name: models.find((m) => m.slug === slug)?.name ?? row.label,
+  title: row.title,
+}));
 ---
 <Base title="Affiliate disclosure" description={desc} path="/affiliate-disclosure/" og="/og/page-affiliate-disclosure.png" jsonld={jsonld}>
   <div class="wrap prose">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>Affiliate disclosure</h1>
-      <Byline />
     </div>
     <p>{AMAZON_DISCLOSURE}</p>
-    <p>TreadmillSpecs.com participates in the Amazon Associates Program. Amazon is the only affiliate program on this site. Every Amazon link is built in one configuration file. The tag is <span class="mono">{AMAZON_TAG}</span>.</p>
-    <p>A <span class="mono">/dp/</span> link is used only when we opened that Amazon product page on 1 November 2026 and the title named that one model. Seven models passed that check. The others use a tagged Amazon search, because the live results were a multi-model family, a different machine, or a title that did not name the model. A search is not a promise that the first result is the treadmill on the spec page.</p>
-    <p>We do not show prices.</p>
-    <p>Editorial rows are filled before a shopping link is added, and a missing spec is not filled in because a retailer page mentions one.</p>
+    <p>TreadmillSpecs.com participates in the Amazon Associates Program. Amazon is the only affiliate program on this site. There are no display ads. Every Amazon link is built in one configuration file. The tag is <span class="mono">{AMAZON_TAG}</span>.</p>
+    <h2>When a link goes to one product</h2>
+    <p>A <span class="mono">/dp/</span> link is used only when that Amazon product page was opened on 1 November 2026 and the title named that one model. {verified.length} models passed that check:</p>
+    <ul>
+      {verified.map((row) => <li>{row.name}. The title on the page was “{row.title}.”</li>)}
+    </ul>
+    <p>The other models use a tagged Amazon search, because the live results were a multi-model family, a different machine, or a title that did not name the model. A search is not a promise that the first result is the treadmill on the spec page. A horsepower or other spec that appears only in an Amazon title is not copied into the specification table. The BowFlex pages are the case to watch: the maker’s specs block does not print horsepower, even if a retailer title does.</p>
+    <h2>What the links do not change</h2>
+    <p>Prices are not shown. A specification is filled before a shopping link is added, and a missing spec is not filled because a retailer page mentions one. The tag does not change the order of the small-room, low-ceiling, or folding lists. Those lists sort published inches.</p>
+    <p>If you follow a link, Amazon may set its own cookies and may pay a commission on a qualifying purchase. You do not pay a higher price through the tag as a condition of using this site. Questions about a link go to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
   </div>
 </Base>

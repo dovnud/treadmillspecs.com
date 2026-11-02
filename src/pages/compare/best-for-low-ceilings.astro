@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import { models, modelPath, useBox } from '../../data/models';
 import { SITE } from '../../lib/site';
@@ -13,7 +12,7 @@ const ranked = models
 const withRule = models.filter((m) => m.clearance && (m.clearance.userPlusIn != null || m.clearance.minCeilingIn != null));
 const path = '/compare/best-for-low-ceilings/';
 const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: 'Low ceilings', path }];
-const desc = 'Treadmills ranked by published unfolded height, plus the ceiling rules manufacturers actually print.';
+const desc = 'Treadmills ranked by published unfolded height, plus the ceiling rules manufacturers print.';
 const jsonld = [
   webPageLd('Treadmills with the lowest published machine height', path, desc, SITE.checked),
   crumbLd(crumbs),
@@ -26,7 +25,6 @@ const jsonld = [
       <Crumbs crumbs={crumbs} />
       <h1>Lowest published machine heights</h1>
       <p class="lede">Sorted by unfolded height. A short machine is not the same thing as a low ceiling while someone is standing on the deck. Use the ceiling rules below, and the will-it-fit check, for that.</p>
-      <Byline />
     </div>
     <div class="tblwrap">
       <table>
@@ -43,8 +41,13 @@ const jsonld = [
         </tbody>
       </table>
     </div>
+    <div class="prose">
+      <h2>Machine height is only the first cut</h2>
+      <p>The shortest open machine in this set is the {ranked[0]?.m.name} at {ranked[0]?.box.h} inches. That number is the treadmill, not the person. Where step-up height is published and the maker did not print a ceiling rule, the fit check adds step-up to the user height you enter and does not add incline rise. Where step-up is missing, that sum is skipped rather than filled from deck thickness.</p>
+      <p>BowFlex prints one ceiling rule on the T6, T9, and T16: user height plus 20.75 inches. A 70 inch user needs 90.75 inches of ceiling under that sentence, which is well above the machine heights on those pages. Peloton prints a 7-foot minimum and a second rule tied to user height (plus 20 inches on the Tread Vision, plus 24 inches on the Tread+ Vision). Sole’s 2026 folding manuals state rear floor clearance and do not state a ceiling height. NordicTrack’s pages in this set do not state one either. A low rank here means a short chassis. It does not mean the ceiling rule, when one exists, will pass.</p>
+    </div>
     <h2>Ceiling rules the manufacturer printed</h2>
-    <p>These are not estimated from incline percent. If a model is missing, its page did not print a ceiling rule.</p>
+    <p>These are not calculated from incline percent. If a model is missing, its page did not print a ceiling rule.</p>
     <div class="grid2">
       {withRule.map((m) => (
         <article class="card">

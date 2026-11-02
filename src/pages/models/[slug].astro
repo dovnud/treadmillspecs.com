@@ -1,12 +1,14 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import SpecTable from '../../components/SpecTable.astro';
 import BuyBlock from '../../components/BuyBlock.astro';
 import FaqList from '../../components/FaqList.astro';
 import ReminderForm from '../../components/ReminderForm.astro';
+import GuideSections from '../../components/GuideSections.astro';
 import { models, modelPath, useBox } from '../../data/models';
+import { guides } from '../../data/guides';
+import { comparisonsForModel } from '../../data/comparison-copy';
 import { modelFaqs, productLd, specRows } from '../../lib/modelView';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
@@ -17,9 +19,11 @@ export function getStaticPaths() {
 const { model: m } = Astro.props;
 const path = modelPath(m);
 const crumbs = [{ name: 'Models', path: '/models/' }, { name: m.name, path }];
+const guide = guides[m.slug];
 const desc = m.summary;
 const faqs = modelFaqs(m);
 const box = useBox(m);
+const related = comparisonsForModel(m.slug);
 const jsonld = [
   webPageLd(`${m.name} specs`, path, desc, SITE.checked),
   crumbLd(crumbs),
@@ -36,19 +40,10 @@ const rows = specRows(m);
       <h1>{m.name}</h1>
       <p class="lede">{m.summary}</p>
       <BuyBlock slug={m.slug} query={m.searchQuery} name={m.name} />
-      <Byline />
     </div>
-    {box && (
-      <div class="spec-strip" aria-label="Published footprint">
-        <div class="spec-cell"><b>{box.l}"</b><span>Length</span></div>
-        <div class="spec-cell"><b>{box.w}"</b><span>Width</span></div>
-        <div class="spec-cell"><b>{box.h}"</b><span>Height</span></div>
-        <div class="spec-cell"><b>{m.maxUserLb ?? '—'}</b><span>Max user lb</span></div>
-      </div>
-    )}
-    {m.fitUnfolded && <div class="callout"><p>{m.fitUnfolded.why}</p></div>}
+    {guide && <GuideSections fits={guide.fits} room={guide.room} motor={guide.motor} warranty={guide.warranty} verdict={guide.verdict} />}
     <h2>Specifications</h2>
-    <p class="small muted">Values are copied from the cited page. They are not estimated from another model year or from a review.</p>
+    {box && <p>The fit check uses {box.l} by {box.w} by {box.h} inches for the open machine{m.fitUnfolded ? ', taking the larger published figure on each axis' : ''}.</p>}
     <SpecTable rows={rows} />
     {m.clearance && (
       <div class="oknote">
@@ -58,7 +53,7 @@ const rows = specRows(m);
     )}
     {m.notes.length > 0 && (
       <>
-        <h2>Notes from the source</h2>
+        <h2>Notes from the manufacturer page</h2>
         <ul>{m.notes.map((n) => <li>{n}</li>)}</ul>
       </>
     )}
@@ -70,6 +65,18 @@ const rows = specRows(m);
       · <a href="/compare/best-folding/">Folding list</a>
       · <a href={`/brands/${m.brandSlug}/`}>{m.brand} models</a>
     </p>
+    {related.length > 0 && (
+      <>
+        <h2>Comparisons that use these rows</h2>
+        <ul>
+          {related.map((item) => {
+            const [a, b] = item.slug.split('-vs-');
+            const other = models.find((model) => model.slug === (a === m.slug ? b : a));
+            return <li><a href={`/compare/${item.slug}/`}>{m.name} vs {other?.name}</a>. {item.summary}</li>;
+          })}
+        </ul>
+      </>
+    )}
     <h2>Questions the table can answer</h2>
     <FaqList items={faqs} />
     <ReminderForm modelName={m.name} modelSlug={m.slug} pagePath={path} />

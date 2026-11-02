@@ -1,0 +1,25 @@
+---
+interface Props {
+  fits: string;
+  room: string;
+  motor: string;
+  warranty: string;
+  verdict: string;
+}
+const { fits, room, motor, warranty, verdict } = Astro.props;
+const sections = [
+  ['Who it fits', fits],
+  ['Room and ceiling', room],
+  ['Motor and deck', motor],
+  ['Warranty', warranty],
+  ['Verdict', verdict],
+];
+---
+<div class="prose">
+  {sections.map(([heading, body]) => (
+    <section>
+      <h2>{heading}</h2>
+      {body.trim().split(/\n\n+/).map((paragraph) => <p>{paragraph}</p>)}
+    </section>
+  ))}
+</div>
