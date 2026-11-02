@@ -1,33 +1,34 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import { models } from '../../data/models';
+import { comparisonCopy } from '../../data/comparison-copy';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
 const crumbs = [{ name: 'Compare', path: '/compare/' }];
-const desc = 'Compare two treadmills on the manufacturer figures only, or open the small-footprint and low-ceiling lists built from those inches.';
+const desc = 'Maintained treadmill comparisons built from manufacturer specs, plus the small-room, low-ceiling, and folding lists.';
 const jsonld = [webPageLd('Compare treadmill specs', '/compare/', desc, SITE.checked), crumbLd(crumbs)];
+const names = new Map(models.map((m) => [m.slug, m.name]));
 ---
 <Base title="Compare treadmill specs" description={desc} path="/compare/" nav="compare" og="/og/page-compare.png" jsonld={jsonld}>
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>Compare</h1>
-      <p class="lede">Side-by-side pages repeat each model’s published value and its source. They do not score a winner.</p>
-      <Byline />
+      <h1>Compare treadmill specs</h1>
+      <p class="lede">A maintained comparison is a pair where the published rows support a choice: who each limit fits, how the floor and ceiling change, what the motor and deck lines say, and a verdict that stays inside those rows. Warranty length is noted only when a cited section printed it. In this set, those sections did not.</p>
     </div>
+    <p>The form below opens any two models. Pairs without a write-up still show the two tables, and they are marked noindex so the sitemap stays on the pages that add a decision. There are {comparisonCopy.length} maintained guides.</p>
     <form class="finder" id="pair-form">
-      <div class="finder-head">Two models <span>Same fields, two citations</span></div>
+      <div class="finder-head">Two models <span>Any pair opens</span></div>
       <div class="finder-body">
         <div class="f-grid">
           <div>
-            <label for="a">First</label>
+            <label for="a">First model</label>
             <select id="a" name="a">{models.map((m) => <option value={m.slug}>{m.name}</option>)}</select>
           </div>
           <div>
-            <label for="b">Second</label>
+            <label for="b">Second model</label>
             <select id="b" name="b">{models.map((m, i) => <option value={m.slug} selected={i === 1}>{m.name}</option>)}</select>
           </div>
         </div>
@@ -37,17 +38,24 @@ const jsonld = [webPageLd('Compare treadmill specs', '/compare/', desc, SITE.che
     <div class="grid3">
       <a class="card" href="/compare/best-for-small-spaces/">
         <h2>Small rooms</h2>
-        <p>Unfolded length times width, lowest first.</p>
+        <p>Unfolded length times width, lowest first. Clearance is not inside the area.</p>
       </a>
       <a class="card" href="/compare/best-for-low-ceilings/">
         <h2>Low ceilings</h2>
-        <p>Unfolded height, shortest first, plus published ceiling rules.</p>
+        <p>Unfolded height, shortest first, plus the ceiling rules makers print.</p>
       </a>
       <a class="card" href="/compare/best-folding/">
         <h2>Folding</h2>
         <p>Models the manufacturer says fold, ranked by published floor area.</p>
       </a>
     </div>
+    <h2>Maintained guides</h2>
+    <ul>
+      {comparisonCopy.map((item) => {
+        const [a, b] = item.slug.split('-vs-');
+        return <li><a href={`/compare/${item.slug}/`}>{names.get(a)} vs {names.get(b)}</a>. {item.summary}</li>;
+      })}
+    </ul>
   </div>
 </Base>
 <script>

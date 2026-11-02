@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
@@ -13,8 +12,7 @@ const jsonld = [webPageLd('How we verify treadmill specs', '/how-we-verify/', de
   <div class="wrap prose">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>How we verify specs</h1>
-      <Byline />
+      <h1>How specs are checked</h1>
     </div>
     <p>A number is printed as a fact only when a manufacturer page or that manufacturer’s manual states it. The row links the URL and the date that page was read. The date on this site, 1 November 2026, is that read date. It is not a rolling “updated” stamp.</p>
     <h2>What counts as a source</h2>
@@ -32,6 +30,9 @@ const jsonld = [webPageLd('How we verify treadmill specs', '/how-we-verify/', de
     <p>Incline rise in inches is not estimated from percent grade and deck length. If the maker did not publish a ceiling rule, and did publish step-up height, the extra ceiling check is step-up height plus the height you type. That assumption is written on the result.</p>
     <h2>Prices and reminders</h2>
     <p>No prices are shown. Amazon links are searches, not verified product pages, until an ASIN has been checked on a live Amazon page. The reminder form stores an email request. It does not send mail.</p>
+    <h2>Buying notes and comparisons</h2>
+    <p>The notes under a model page use only the fields in that table: who the published user limits fit, how the footprint and any printed ceiling rule interact, what the motor and deck lines say, and a verdict against a nearby model in the same line. Warranty length is discussed only to record that the cited spec sections did not state one. A coverage period is not imported from a retailer or from memory.</p>
+    <p>A comparison is maintained when those published differences support a choice. Other pairs still open from the compare form, repeat the two tables, and are marked noindex. They are left out of the sitemap. The small-room, low-ceiling, and folding lists sort the same inches. They do not add a score for cushioning, noise, or price.</p>
     <p>Corrections: <a href="/contact/">contact</a>.</p>
   </div>
 </Base>

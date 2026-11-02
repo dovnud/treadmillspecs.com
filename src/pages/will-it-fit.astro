@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import { models } from '../data/models';
 import { SITE } from '../lib/site';
@@ -34,7 +33,6 @@ const jsonld = [
       <Crumbs crumbs={crumbs} />
       <h1>Will it fit</h1>
       <p class="lede">Room length, room width, ceiling height, and user height, then a model. Results use published inches. Every line says what was added and what was left out.</p>
-      <Byline />
     </div>
     <form class="finder" id="fit-form">
       <div class="finder-head">Room check <span>Inches, except weight</span></div>
@@ -71,8 +69,17 @@ const jsonld = [
         <li>A second rear figure on the same Peloton page is kept, and the larger one is the one that must fit.</li>
       </ul>
     </div>
+    <div class="prose">
+      <h2>Three published examples</h2>
+      <p>Sole F63, in use: the machine is 75 by 34 by 52 inches, and the 2026 manual adds 42 inches behind it. Side and front clearances are not in that section, so they are not added. A room that is exactly 75 inches long fails. A room that is 120 inches on the long wall can pass the floor line if the width also clears 34 inches. Step-up height is not published, so the person-on-the-deck sum is skipped. There is no ceiling rule to apply beyond the 52 inch machine height.</p>
+      <p>BowFlex T6: the open machine is 76 by 35 by 71, and folding does not lower that 71 inch height. The ceiling rule is user height plus 20.75 inches. A 70 inch user needs 90.75 inches of ceiling. The machine-height line can pass in a 96 inch room while the ceiling rule still fails. Floor clearance is not printed.</p>
+      <p>Peloton Tread Vision: the chassis is 68 by 33 by 65, which looks small on the footprint list. Delivery text and the FAQ add 24 inches in front, 24 inches on each side, and 79 inches behind (the larger of 78.7 and 79). The in-use rectangle is 171 by 81 inches. The ceiling must clear both 84 inches and user height plus 20 inches. A 170 inch room fails the floor line even though the chassis itself would fit.</p>
+      <p>Stored mode is a different question. It uses folded dimensions only, and only when they were published. Workout clearances are not applied to a folded machine. The T Series 6.5 S URL and the Sole TT8 do not publish a folded size, so stored mode cannot check them.</p>
+    </div>
+    <h2>Common questions</h2>
     {faqs.map((f) => (
-      <details class="faq"><summary>{f.q}</summary><div class="a"><p>{f.a}</p></div></details>
+      <h3>{f.q}</h3>
+      <p>{f.a}</p>
     ))}
   </div>
 </Base>
@@ -102,7 +109,8 @@ const jsonld = [
       userW: userW ? Number(userW) : undefined,
       mode: String(data.get('mode')) === 'stored' ? 'stored' : 'use',
     });
-    const rows = result.checks.map((ch) => `<div class="check-row"><div class="pill ${ch.status}">${ch.status}</div><div><strong>${ch.title}</strong><p>${ch.detail}</p></div></div>`).join('');
+    const labels = { pass: 'Pass', fail: 'Fail', warn: 'Note', na: 'Not published' };
+    const rows = result.checks.map((ch) => `<div class="check-row"><div class="pill ${ch.status}">${labels[ch.status]}</div><div><strong>${ch.title}</strong><p>${ch.detail}</p></div></div>`).join('');
     out.hidden = false;
     out.innerHTML = `<h2>${result.headline}</h2><p><a href="${modelPath(model)}">${model.name} spec table</a></p>${rows}`;
     out.scrollIntoView({ behavior: 'smooth', block: 'start' });

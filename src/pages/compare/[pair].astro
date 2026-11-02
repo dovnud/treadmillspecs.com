@@ -1,8 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
+import GuideSections from '../../components/GuideSections.astro';
 import { pairs, modelPath } from '../../data/models';
+import { getComparisonCopy } from '../../data/comparison-copy';
 import { specRows } from '../../lib/modelView';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
@@ -12,10 +13,14 @@ export function getStaticPaths() {
 }
 const { pair } = Astro.props;
 const path = `/compare/${pair.slug}/`;
+const copy = getComparisonCopy(pair.slug);
 const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: `${pair.a.name} vs ${pair.b.name}`, path }];
-const desc = `${pair.a.name} vs ${pair.b.name}. Same spec fields, each value cited to the manufacturer page that printed it.`;
+const desc = copy?.summary ?? `${pair.a.name} and ${pair.b.name}, with each value taken from that model’s manufacturer page.`;
 const rowsA = specRows(pair.a);
 const rowsB = specRows(pair.b);
+const joined = rowsA.map((row, i) => ({ label: row.label, a: row.field, b: rowsB[i].field }));
+const diffs = joined.filter((row) => row.a.text !== row.b.text);
+const same = joined.filter((row) => row.a.text === row.b.text).map((row) => row.label);
 const jsonld = [
   webPageLd(`${pair.a.name} vs ${pair.b.name}`, path, desc, SITE.checked),
   crumbLd(crumbs),
@@ -25,14 +30,16 @@ const jsonld = [
   },
 ];
 ---
-<Base title={`${pair.a.name} vs ${pair.b.name}`} description={desc} path={path} nav="compare" og="/og/page-compare.png" jsonld={jsonld}>
+<Base title={`${pair.a.name} vs ${pair.b.name}`} description={desc} path={path} nav="compare" og="/og/page-compare.png" jsonld={jsonld} noindex={!copy}>
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>{pair.a.name} vs {pair.b.name}</h1>
-      <p class="lede">Each cell is that model’s published text. A blank in the source stays “Not published by manufacturer.”</p>
-      <Byline />
+      <p class="lede">{copy ? copy.summary : 'Both spec tables are below. This pair is not one of the maintained buying guides.'}</p>
     </div>
+    {copy && <GuideSections fits={copy.fits} room={copy.room} motor={copy.motor} warranty={copy.warranty} verdict={copy.verdict} />}
+    <h2>{copy ? 'Where the published text differs' : 'Published values'}</h2>
+    {copy && same.length > 0 && <p>The same published text on both pages: {same.join(', ')}. Those rows are on each model page with the citation.</p>}
     <div class="tblwrap">
       <table>
         <thead>
@@ -43,22 +50,24 @@ const jsonld = [
           </tr>
         </thead>
         <tbody>
-          {rowsA.map((row, i) => (
+          {(copy ? diffs : joined).map((row) => (
             <tr>
               <th scope="row">{row.label}</th>
-              <td class={row.field.published ? undefined : 'unpub'}>
-                {row.field.text}
-                <div class="small"><a href={row.field.cite.url} rel="noopener">Source</a></div>
+              <td class={row.a.published ? undefined : 'unpub'}>
+                {row.a.text}
+                <div class="small"><a href={row.a.cite.url} rel="noopener">Manufacturer page</a></div>
               </td>
-              <td class={rowsB[i].field.published ? undefined : 'unpub'}>
-                {rowsB[i].field.text}
-                <div class="small"><a href={rowsB[i].field.cite.url} rel="noopener">Source</a></div>
+              <td class={row.b.published ? undefined : 'unpub'}>
+                {row.b.text}
+                <div class="small"><a href={row.b.cite.url} rel="noopener">Manufacturer page</a></div>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
+    {!copy && <p>Maintained guides, where the published specs support a choice, are listed on the <a href="/compare/">compare page</a>. This URL stays available from the form.</p>}
+    <p><a href={modelPath(pair.a)}>{pair.a.name} spec table</a> · <a href={modelPath(pair.b)}>{pair.b.name} spec table</a></p>
     <p><a href={`/will-it-fit/?model=${pair.a.slug}`}>Fit check, {pair.a.name}</a> · <a href={`/will-it-fit/?model=${pair.b.slug}`}>Fit check, {pair.b.name}</a></p>
   </div>
 </Base>

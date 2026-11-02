@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
@@ -14,17 +13,19 @@ const jsonld = [webPageLd('Privacy policy', '/privacy/', desc, SITE.checked), cr
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>Privacy</h1>
-      <Byline />
     </div>
-    <p>TreadmillSpecs.com is a static reference site. Reading a page does not require an account.</p>
+    <p>TreadmillSpecs.com is a static reference site. Reading a page does not require an account, and the pages do not set an analytics cookie.</p>
     <h2>Reminder requests</h2>
-    <p>The form on a model page can store an email address, the model name, the page path, the consent sentence, the time, and a hash of the IP address. The purpose is a price-drop reminder request. The form does not send email and does not start a newsletter. If the database is not connected, the request is not stored and the page says so.</p>
-    <p>Cloudflare Turnstile runs on that form to reject automated submissions. The secret key stays in the Cloudflare Pages secret TURNSTILE_SECRET. It is not in the site code.</p>
+    <p>The form on a model page can store a price-drop reminder request. The stored fields are the email address, the model page path, the purpose (“price-drop”), the model name and model slug, the consent sentence you confirmed, the time, and a SHA-256 hash of the IP address. The hash is not the raw IP. The form does not send email and does not start a newsletter.</p>
+    <p>If the database is not connected, the request is not stored and the response says so. A duplicate of the same email, purpose, and model is not stored twice. The form also refuses a request that is not from a model page, a request without the consent checkbox, and a request that fills the hidden fax field.</p>
+    <p>Rate limiting counts requests by that IP hash. More than five requests in ten minutes from the same hash are refused. The hit rows used for that count are deleted after 24 hours. The reminder row itself stays until you ask for it to be removed.</p>
+    <h2>Bot check</h2>
+    <p>Cloudflare Turnstile runs on the reminder form. The browser loads Turnstile’s script, and the server checks the token with Cloudflare’s siteverify endpoint, including the connecting IP when Cloudflare provides it. The secret key stays in the Cloudflare Pages secret TURNSTILE_SECRET. It is not in the site code. If the secret is not configured, the request is not stored.</p>
     <h2>Contact mail</h2>
-    <p>The contact page opens your own email program addressed to {SITE.email}. That page does not receive or store the message.</p>
-    <h2>Cookies and logs</h2>
-    <p>The site does not set an analytics cookie and does not run advertising scripts. Cloudflare, which hosts the site, may keep standard request logs. Amazon’s own site may set cookies if you follow a search link.</p>
+    <p>The contact page opens your own email program addressed to {SITE.email}. That page does not receive or store the message. Whatever you send sits in your mail provider and in the inbox for that address.</p>
+    <h2>Cookies, logs, and Amazon</h2>
+    <p>The site does not run advertising scripts. Cloudflare, which hosts the site, may keep standard request logs. Amazon may set cookies if you follow a product or search link. Those cookies are Amazon’s. This site does not read them.</p>
     <h2>Requests</h2>
-    <p>To ask what was stored for your email, or to ask for it to be deleted, write to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+    <p>To ask what was stored for your email, or to ask for it to be deleted, write to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. Say the address you typed into the reminder form. There is no account page to sign in to.</p>
   </div>
 </Base>

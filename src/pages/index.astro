@@ -1,19 +1,28 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import HeroArt from '../components/HeroArt.astro';
-import { models, modelPath, brands } from '../data/models';
+import { models, modelPath, brands, useBox, floorArea } from '../data/models';
 import { linkFor, AFFILIATE_REL, AFFILIATE_TARGET } from '../config/affiliate';
+import { comparisonCopy } from '../data/comparison-copy';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
 
 const desc = 'Treadmill deck, motor, and footprint from manufacturer pages, with Amazon links and lists for small rooms, low ceilings, and folding models.';
+const featured = [
+  'nordictrack-commercial-1750-vs-nordictrack-commercial-2450',
+  'sole-f80-vs-sole-f85',
+  'peloton-tread-vision-vs-peloton-tread-plus-vision',
+].map((slug) => comparisonCopy.find((item) => item.slug === slug)!);
+const ranked = models
+  .map((m) => ({ m, area: floorArea(m), box: useBox(m) }))
+  .filter((row) => row.area != null && row.box)
+  .sort((a, b) => a.area! - b.area!);
 const jsonld = [
-  webPageLd('Treadmill specs and will-it-fit', '/', desc, SITE.checked),
+  webPageLd('Treadmill specs and room fit', '/', desc, SITE.checked),
   crumbLd([]),
   {
     '@type': 'ItemList',
-    name: 'Buyer guides from published treadmill specs',
+    name: 'Treadmill buying lists from published specs',
     itemListElement: [
       { name: 'Best for small spaces', path: '/compare/best-for-small-spaces/' },
       { name: 'Best for low ceilings', path: '/compare/best-for-low-ceilings/' },
@@ -25,61 +34,71 @@ const jsonld = [
 const brandList = brands();
 const shop = models.slice(0, 6);
 ---
-<Base title="Treadmill specs and will it fit" description={desc} path="/" nav="home" og="/og/default.png" jsonld={jsonld}>
+<Base title="Treadmill specs and room fit" description={desc} path="/" nav="home" og="/og/default.png" jsonld={jsonld}>
   <div class="wrap hero">
     <div class="hero-grid">
       <div>
-        <p class="kicker">Manufacturer pages, read 1 November 2026</p>
-        <h1>Will this treadmill <em>fit</em> — and where do you buy it?</h1>
-        <p class="lede">Deck, motor, weight, and footprint copied from the maker. Lists for small rooms, low ceilings, and folding models use only those inches. Amazon buttons sit on every model page. No prices.</p>
+        <h1>Treadmill specs and room fit</h1>
+        <p class="lede">Deck, motor, user weight, and footprint taken from the manufacturer page for each model. The lists below sort those inches. Amazon links sit on the model pages. Prices are not shown.</p>
         <div class="hero-ctas">
           <a class="btn" href="/compare/best-for-small-spaces/">Small rooms</a>
           <a class="btn" href="/compare/best-folding/">Folding</a>
           <a class="btn ghost" href="/will-it-fit/">Will it fit</a>
         </div>
-        <Byline />
       </div>
       <HeroArt />
     </div>
   </div>
   <section class="wrap">
-    <h2>Start with a buying question</h2>
+    <h2>What you can settle from the tables</h2>
+    <p>A model page answers four buying questions from the cited rows: who the published limits fit, whether the machine fits the room and the ceiling, what the motor and deck lines say, and whether a warranty term was printed. If the maker did not print a number, the cell says so. Incline levels are not turned into a percent. Deck thickness is not used as a step-up height. NordicTrack’s CHP footnote is kept with the motor, including their statement that the rating is a lab figure.</p>
     <div class="grid3">
       <a class="card" href="/compare/best-for-small-spaces/">
-        <p class="kicker">Floor area</p>
-        <h3>Best for small spaces</h3>
-        <p>Unfolded length times width, shortest footprint first. Clearance is called out on the model, not folded into the rank.</p>
-        <p class="go">Open the list</p>
+        <h3>Small rooms</h3>
+        <p>Unfolded length times width, shortest footprint first. Clearance the maker asks you to leave around the machine is not folded into the rank. That clearance is on the model page when it exists.</p>
       </a>
       <a class="card" href="/compare/best-for-low-ceilings/">
-        <p class="kicker">Machine height</p>
-        <h3>Best for low ceilings</h3>
-        <p>Shortest published machine height first, plus the ceiling rules a few makers actually print.</p>
-        <p class="go">Open the list</p>
+        <h3>Low ceilings</h3>
+        <p>Shortest published machine height first, plus the ceiling rules a few makers print. A short chassis is not the same thing as enough room for the person on the belt.</p>
       </a>
       <a class="card" href="/compare/best-folding/">
-        <p class="kicker">Folds, then area</p>
-        <h3>Best folding treadmills</h3>
-        <p>Only models the manufacturer says fold, ranked by published floor area. Not a ride test.</p>
-        <p class="go">Open the list</p>
+        <h3>Folding models</h3>
+        <p>Only models the manufacturer says fold, ranked by published floor area. The X16 and X24 pages say they do not fold. Unpublished fold status stays off the list.</p>
       </a>
     </div>
-    <h2>Comparisons people run before they buy</h2>
+    <h2>Comparisons with a verdict</h2>
+    <p>Eighteen pairs have a written comparison, limited to places where the published specs support a choice. Other pairs still open from the <a href="/compare/">compare form</a> and are marked noindex, because a cross-brand spec dump does not add a decision the two model pages do not already give you.</p>
     <div class="grid3">
-      <a class="card" href="/compare/nordictrack-commercial-1750-vs-nordictrack-commercial-2450/">
-        <h3>Commercial 1750 vs 2450</h3>
-        <p>Same belt and fold on NordicTrack’s pages. Speed and height are where the published numbers split.</p>
-      </a>
-      <a class="card" href="/compare/sole-f80-vs-sole-f85/">
-        <h3>Sole F80 vs F85</h3>
-        <p>Motor, deck width, and unit measurements from Sole’s full specifications.</p>
-      </a>
-      <a class="card" href="/compare/peloton-tread-vision-vs-peloton-tread-plus-vision/">
-        <h3>Tread Vision vs Tread+</h3>
-        <p>Peloton’s current shop pages: belt, step-up, and the clearance each page prints.</p>
-      </a>
+      {featured.map((item) => {
+        const [a, b] = item.slug.split('-vs-');
+        const left = models.find((m) => m.slug === a);
+        const right = models.find((m) => m.slug === b);
+        return (
+          <a class="card" href={`/compare/${item.slug}/`}>
+            <h3>{left?.name.replace(/^NordicTrack |^Sole |^Peloton /, '')} vs {right?.name.replace(/^NordicTrack |^Sole |^Peloton /, '')}</h3>
+            <p>{item.summary}</p>
+          </a>
+        );
+      })}
     </div>
-    <h2>Models, with the Amazon button on the page</h2>
+    <h2>Footprint, smallest floor first</h2>
+    <p>Square inches are unfolded length times width. They do not include a safety border. {ranked[0] && <>The smallest floor in this set is the {ranked[0].m.name}, at {ranked[0].box!.l} by {ranked[0].box!.w} inches.</>}</p>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>Model</th><th>Floor</th><th>Area</th><th>Max user</th></tr></thead>
+        <tbody>
+          {ranked.map((row) => (
+            <tr>
+              <td><a href={modelPath(row.m)}>{row.m.name}</a></td>
+              <td class="mono">{row.box!.l}" × {row.box!.w}"</td>
+              <td class="mono">{Math.round(row.area!)} in²</td>
+              <td>{row.m.maxUser.published ? row.m.maxUser.text : 'Not published'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <h2>Models with an Amazon link on the page</h2>
     <div class="grid3">
       {shop.map((m) => {
         const link = linkFor(m.slug, m.searchQuery);
@@ -98,7 +117,7 @@ const shop = models.slice(0, 6);
       {brandList.map((b) => (
         <a class="card" href={`/brands/${b.slug}/`}>
           <h3>{b.name}</h3>
-          <p>{b.count} model{b.count === 1 ? '' : 's'} with a cited spec table.</p>
+          <p>{b.count} model{b.count === 1 ? '' : 's'} with a spec table and a buying note.</p>
         </a>
       ))}
     </div>

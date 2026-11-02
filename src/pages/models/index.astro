@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import { models, modelPath, useBox } from '../../data/models';
 import { SITE } from '../../lib/site';
@@ -15,8 +14,11 @@ const jsonld = [webPageLd('Treadmill models', '/models/', desc, SITE.checked), c
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>Models</h1>
-      <p class="lede">Each page is one machine. The table is what the manufacturer published, plus the URL and the date we read it.</p>
-      <Byline />
+      <p class="lede">Each page is one machine: the published limits, the room and ceiling math, the motor and deck lines, a warranty note, and a verdict that stays inside those rows.</p>
+    </div>
+    <div class="prose">
+      <p>The set is {models.length} current product pages: NordicTrack’s Commercial, T Series, and X machines; Sole’s F63 through F85 plus the TT8; Horizon’s 7.0 AT, 7.4 AT, 7.8 AT, and T202; BowFlex’s T6, T9, and T16; Peloton’s Tread Vision and Tread+ Vision; the Life Fitness Run CX; and the LifeSpan TR1200i. A missing field stays “Not published by manufacturer.” Horsepower is blank on Horizon, BowFlex, and Peloton because those pages did not print it. NordicTrack’s CHP numbers stay, with the lab-rating footnote.</p>
+      <p>Use a brand page for the line in one table. Use a maintained comparison when two models in the same line differ in a way the specs can settle. Use the room check when you have a length, a width, and a ceiling.</p>
     </div>
     <div class="grid2">
       {models.map((m) => {
