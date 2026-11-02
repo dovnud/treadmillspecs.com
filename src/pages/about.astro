@@ -1,12 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
+import { models, brands } from '../data/models';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
 
 const crumbs = [{ name: 'About', path: '/about/' }];
-const desc = 'TreadmillSpecs.com is an independent reference for manufacturer treadmill specs and a room-fit check. Pages are by the Treadmill Specs editorial team.';
+const brandLine = brands().map((b) => b.name).join(', ');
+const desc = 'TreadmillSpecs.com is an independent reference for manufacturer treadmill specs and a room-fit check.';
 const jsonld = [
   webPageLd('About TreadmillSpecs.com', '/about/', desc, SITE.checked),
   crumbLd(crumbs),
@@ -19,17 +20,20 @@ const jsonld = [
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>About</h1>
-      <Byline />
     </div>
-    <p>TreadmillSpecs.com publishes treadmill specifications from manufacturer pages, and a will-it-fit check that uses those inches. It is for someone measuring a spare room before a treadmill arrives, not for a training plan.</p>
-    <h2>Who publishes this site</h2>
-    <p>The site is published by Treadmill Specs, an independent reference. Pages carry the byline “the Treadmill Specs editorial team.” We do not put an individual author name on a page that is a transcription of a manufacturer table. The source link is the thing to judge.</p>
+    <p>TreadmillSpecs.com publishes treadmill specifications from manufacturer pages, and a room check that uses those inches. It is for someone measuring a spare room, a ceiling, or a closet before a treadmill arrives. It is not a training plan, a cushioning ranking, or a price list.</p>
+    <h2>What is on the site</h2>
+    <p>The current set is {models.length} models from {brandLine}. Each model page has the running surface, motor line, user weight, unfolded size, folded size when the maker printed one, step-up, power, incline, speed, and machine weight when that row exists. A field the cited page does not state is labeled “Not published by manufacturer.”</p>
+    <p>Three lists sort those inches: open floor area, open machine height, and folding models by open floor area. Written comparisons cover pairs where the published rows support a choice, such as two models in the same line. Other pairs can still be opened from the compare form. Those extra pairs are marked noindex because a second copy of two tables is not a verdict.</p>
+    <p>The room check adds a clearance only when that model’s page or manual prints one. Sole’s 2026 folding manuals, BowFlex’s ceiling line, and Peloton’s delivery text are the clearances in the calculator. NordicTrack, Horizon, Life Fitness, and LifeSpan pages used here do not add a guessed aisle.</p>
+    <h2>Who publishes it</h2>
+    <p>The site is published by Treadmill Specs, an independent reference. Pages do not carry a personal byline. The source link on each row is the thing to judge. There is no staff directory and no personal email. Corrections go to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
     <h2>What the date means</h2>
-    <p>Checked 1 November 2026 means that is when the cited pages and manuals were read for this version of the tables. The date does not move because the layout changed.</p>
+    <p>1 November 2026 is when the cited pages and manuals were read for this version of the tables. The date does not move because the layout changed. If a manufacturer edits a spec after that day, the table is wrong until it is checked again. The manual that ships with the machine remains the authority for assembly and use.</p>
     <h2>How the site is funded</h2>
-    <p>The site is free to read. Amazon links use the Associates tag treadmillspecs-20. That does not change a specification. Details are in the <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p>
+    <p>The site is free to read. There are no display ads. Amazon links use the Associates tag treadmillspecs-20. That tag does not change a specification, and prices are not shown. A direct product link is used only when a live Amazon title named that one model. Other buttons are searches. Details are in the <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p>
     <h2>What this site is not</h2>
-    <p>Not a dealer, not a service shop, and not affiliated with any treadmill brand or with Amazon. The manual that shipped with the machine remains the authority for assembly and use.</p>
-    <p>Write to <a href={`mailto:${SITE.email}`}>{SITE.email}</a> or use the <a href="/contact/">contact page</a>.</p>
+    <p>Not a dealer, not a service shop, and not affiliated with NordicTrack, Sole, Horizon, BowFlex, Peloton, Life Fitness, LifeSpan, or Amazon. Product names are trademarks of their owners and are used here to identify the machines. Warranty lengths are omitted when the transcribed spec block does not state them. Ride feel, noise, and cushioning are omitted because those pages did not give a measurement this site can copy.</p>
+    <p>The rules for a missing field, for two official figures that disagree, and for clearance are on <a href="/how-we-verify/">how specs are checked</a>. Write through the <a href="/contact/">contact page</a> if a row does not match the linked manufacturer page.</p>
   </div>
 </Base>

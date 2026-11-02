@@ -1,35 +1,32 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
-import { models, modelPath, useBox, storedBox } from '../../data/models';
+import Sections from '../../components/Sections.astro';
+import { modelPath } from '../../data/models';
+import { foldingRanked, foldingSections } from '../../lib/narrative';
 import { linkFor, AFFILIATE_REL, AFFILIATE_TARGET } from '../../config/affiliate';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
-const ranked = models
-  .filter((m) => m.folds === 'yes')
-  .map((m) => ({ m, box: useBox(m), stored: storedBox(m) }))
-  .filter((row): row is { m: typeof models[number]; box: { l: number; w: number; h: number }; stored: { l: number; w: number; h: number } | null } => row.box != null)
-  .map((row) => ({ ...row, area: row.box.l * row.box.w }))
-  .sort((a, b) => a.area - b.area);
+const ranked = foldingRanked();
+const sections = foldingSections();
 const path = '/compare/best-folding/';
 const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: 'Folding', path }];
-const desc = 'Folding treadmills ranked by published unfolded floor area. Only models the manufacturer says fold. Not a ride-quality ranking.';
+const desc = 'Folding treadmills ranked by published unfolded floor area. Only models the manufacturer says fold. Stored height is in the table.';
 const jsonld = [
-  webPageLd('Best folding treadmills by published footprint', path, desc, SITE.checked),
+  webPageLd('Folding treadmills by published footprint', path, desc, SITE.checked),
   crumbLd(crumbs),
   { '@type': 'ItemList', itemListElement: ranked.map((row, i) => ({ '@type': 'ListItem', position: i + 1, name: row.m.name, url: SITE.url + modelPath(row.m) })) },
 ];
 ---
-<Base title="Best folding treadmills by footprint" description={desc} path={path} nav="folding" og="/og/page-best-folding.png" jsonld={jsonld}>
+<Base title="Folding treadmills by footprint" description={desc} path={path} nav="folding" og="/og/page-best-folding.png" jsonld={jsonld}>
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>Best folding treadmills</h1>
-      <p class="lede">“Best” on this page means the smallest published unfolded floor area among machines the manufacturer says fold. It is not a cushion score, a motor test, or a price ranking. We do not publish an “under $X” list: this site does not print prices, and there is no dated manufacturer price table behind a cutoff.</p>
-      <Byline />
+      <h1>Folding treadmills by footprint</h1>
+      <p class="lede">Sorted by the smallest published unfolded floor area among machines the manufacturer says fold. It is not a cushion score, a motor test, or a price ranking. This site does not print prices, and there is no dated manufacturer price table behind a cutoff.</p>
     </div>
+    <Sections sections={sections} />
     <div class="tblwrap">
       <table>
         <thead>

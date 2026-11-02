@@ -1,19 +1,18 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
-import { models, modelPath, useBox } from '../../data/models';
+import Sections from '../../components/Sections.astro';
+import { models, modelPath } from '../../data/models';
+import { byHeight, lowCeilingSections } from '../../lib/narrative';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
-const ranked = models
-  .map((m) => ({ m, box: useBox(m) }))
-  .filter((row): row is { m: typeof models[number]; box: { l: number; w: number; h: number } } => row.box != null)
-  .sort((a, b) => a.box.h - b.box.h);
+const ranked = byHeight();
+const sections = lowCeilingSections();
 const withRule = models.filter((m) => m.clearance && (m.clearance.userPlusIn != null || m.clearance.minCeilingIn != null));
 const path = '/compare/best-for-low-ceilings/';
 const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: 'Low ceilings', path }];
-const desc = 'Treadmills ranked by published unfolded height, plus the ceiling rules manufacturers actually print.';
+const desc = 'Treadmills ranked by published unfolded height, plus the ceiling rules the manufacturer printed.';
 const jsonld = [
   webPageLd('Treadmills with the lowest published machine height', path, desc, SITE.checked),
   crumbLd(crumbs),
@@ -26,8 +25,8 @@ const jsonld = [
       <Crumbs crumbs={crumbs} />
       <h1>Lowest published machine heights</h1>
       <p class="lede">Sorted by unfolded height. A short machine is not the same thing as a low ceiling while someone is standing on the deck. Use the ceiling rules below, and the will-it-fit check, for that.</p>
-      <Byline />
     </div>
+    <Sections sections={sections} />
     <div class="tblwrap">
       <table>
         <thead><tr><th>#</th><th>Model</th><th>Unfolded height</th><th>Step-up</th></tr></thead>

@@ -6,9 +6,9 @@
 @import '@fontsource/ibm-plex-mono/500.css';
 
 :root {
-  --paper: #f3f1ea;
-  --card: #fffcf7;
-  --card2: #e7f2ea;
+  --paper: #f5f6f7;
+  --card: #ffffff;
+  --card2: #eef2f0;
   --ink: #1c211c;
   --muted: #546056;
   --faint: #7d887e;
@@ -60,9 +60,7 @@
 html { scroll-padding-top: 5rem; }
 body {
   margin: 0;
-  background:
-    radial-gradient(900px 280px at 100% -40px, rgba(214, 242, 92, 0.18), transparent 70%),
-    var(--paper);
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--sans);
   font-size: 17px;
@@ -98,8 +96,8 @@ header.site {
 }
 .brand span { color: var(--lane); }
 .brand small {
-  display: block; font-family: var(--sans); font-weight: 600; font-size: 0.68rem;
-  letter-spacing: 0.14em; text-transform: uppercase; color: #b7c7bb;
+  display: block; font-family: var(--sans); font-weight: 600; font-size: 0.75rem;
+  letter-spacing: 0; text-transform: none; color: #b7c7bb;
 }
 nav.main { margin-left: auto; }
 nav.main ul { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
@@ -143,8 +141,8 @@ main { padding-bottom: 48px; }
 @keyframes belt { to { stroke-dashoffset: -36; } }
 .hero h1 em { font-style: normal; color: var(--accent); }
 .kicker {
-  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase;
-  color: var(--accent-dark); margin-bottom: 8px;
+  font-family: var(--sans); font-size: 0.92rem; font-weight: 650; letter-spacing: 0; text-transform: none;
+  color: var(--muted); margin-bottom: 8px;
 }
 .lede { font-size: 1.12rem; color: var(--muted); max-width: 62ch; }
 .pagehead { padding: 34px 0 8px; }
@@ -178,7 +176,7 @@ a.card:hover { border-color: var(--accent); }
 .finder-head span { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; color: #c5d4c8; }
 .finder-body { padding: 16px; }
 .f-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-label { display: block; font-weight: 700; font-size: 0.82rem; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
+label { display: block; font-weight: 650; font-size: 0.95rem; letter-spacing: 0; text-transform: none; margin-bottom: 6px; }
 input, select, textarea {
   width: 100%; padding: 11px 12px; font: inherit; color: var(--ink); background: var(--paper);
   border: 1.5px solid var(--line-strong); border-radius: 8px;
@@ -195,7 +193,7 @@ button.primary { margin-top: 12px; }
 .spec-cell { background: var(--card2); padding: 12px; text-align: center; border-right: 1px solid var(--line); }
 .spec-cell:last-child { border-right: 0; }
 .spec-cell b { display: block; font-family: var(--mono); font-size: 1.05rem; font-weight: 500; }
-.spec-cell span { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.spec-cell span { font-size: 0.82rem; font-weight: 650; letter-spacing: 0; text-transform: none; color: var(--muted); }
 
 .tblwrap { overflow-x: auto; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--card); margin: 12px 0; }
 table { border-collapse: collapse; width: 100%; min-width: 640px; }
@@ -235,7 +233,7 @@ form.stack label { margin-top: 12px; }
 .check { font-weight: 600; text-transform: none; letter-spacing: 0; font-size: 1rem; }
 
 .check-row { display: grid; grid-template-columns: 5.5rem 1fr; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line); }
-.pill { font-family: var(--mono); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
+.pill { font-family: var(--mono); font-size: 0.75rem; font-weight: 500; letter-spacing: 0; text-transform: capitalize; }
 .pill.pass { color: var(--ok); }
 .pill.fail { color: var(--bad); }
 .pill.warn { color: var(--warn-ink); }

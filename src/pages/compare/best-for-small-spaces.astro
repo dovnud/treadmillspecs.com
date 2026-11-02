@@ -1,19 +1,17 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
-import { models, modelPath, useBox } from '../../data/models';
+import Sections from '../../components/Sections.astro';
+import { modelPath } from '../../data/models';
+import { byFloorArea, smallSpaceSections } from '../../lib/narrative';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
-const ranked = models
-  .map((m) => ({ m, box: useBox(m) }))
-  .filter((row): row is { m: typeof models[number]; box: { l: number; w: number; h: number } } => row.box != null)
-  .map((row) => ({ ...row, area: row.box.l * row.box.w }))
-  .sort((a, b) => a.area - b.area);
+const ranked = byFloorArea();
+const sections = smallSpaceSections();
 const path = '/compare/best-for-small-spaces/';
 const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: 'Small spaces', path }];
-const desc = 'Treadmills ranked by published unfolded floor area, length times width. The list uses manufacturer dimensions only.';
+const desc = 'Treadmills ranked by published unfolded floor area, length times width. Clearance is listed separately and is not part of the area.';
 const jsonld = [
   webPageLd('Treadmills with the smallest published footprints', path, desc, SITE.checked),
   crumbLd(crumbs),
@@ -26,8 +24,8 @@ const jsonld = [
       <Crumbs crumbs={crumbs} />
       <h1>Smallest published footprints</h1>
       <p class="lede">Sorted by unfolded length times width, in square inches, using the inches on each spec page. This is not a cushioning or motor ranking. Clearance the maker asks you to leave around the machine is not included in the area.</p>
-      <Byline />
     </div>
+    <Sections sections={sections} />
     <div class="tblwrap">
       <table>
         <thead><tr><th>#</th><th>Model</th><th>Unfolded L × W × H</th><th>Floor area</th><th>Folds</th></tr></thead>

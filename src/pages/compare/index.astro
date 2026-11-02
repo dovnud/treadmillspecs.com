@@ -1,53 +1,77 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
-import { models } from '../../data/models';
+import { models, pairs } from '../../data/models';
+import { INDEXED_PAIRS, compareIndexIntro, pairBlurb } from '../../lib/narrative';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
 const crumbs = [{ name: 'Compare', path: '/compare/' }];
-const desc = 'Compare two treadmills on the manufacturer figures only, or open the small-footprint and low-ceiling lists built from those inches.';
-const jsonld = [webPageLd('Compare treadmill specs', '/compare/', desc, SITE.checked), crumbLd(crumbs)];
+const intro = compareIndexIntro();
+const desc = 'Compare treadmill specs from manufacturer pages, or open the small-room, low-ceiling, and folding lists built from those inches.';
+const written = INDEXED_PAIRS.map((slug) => {
+  const pair = pairs().find((item) => item.slug === slug);
+  return { slug, label: pair ? `${pair.a.name} vs ${pair.b.name}` : slug, blurb: pairBlurb(slug) };
+});
+const jsonld = [
+  webPageLd('Compare treadmill specs', '/compare/', desc, SITE.checked),
+  crumbLd(crumbs),
+  {
+    '@type': 'ItemList',
+    name: 'Written treadmill comparisons',
+    itemListElement: written.map((item, i) => ({ '@type': 'ListItem', position: i + 1, name: item.label, url: SITE.url + `/compare/${item.slug}/` })),
+  },
+];
 ---
 <Base title="Compare treadmill specs" description={desc} path="/compare/" nav="compare" og="/og/page-compare.png" jsonld={jsonld}>
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>Compare</h1>
-      <p class="lede">Side-by-side pages repeat each model’s published value and its source. They do not score a winner.</p>
-      <Byline />
+      <h1>Compare treadmill specs</h1>
+      <p class="lede">Side-by-side pages repeat each model’s published value and its source. A written verdict is on the pairs where those values support a choice.</p>
     </div>
-    <form class="finder" id="pair-form">
-      <div class="finder-head">Two models <span>Same fields, two citations</span></div>
-      <div class="finder-body">
-        <div class="f-grid">
-          <div>
-            <label for="a">First</label>
-            <select id="a" name="a">{models.map((m) => <option value={m.slug}>{m.name}</option>)}</select>
-          </div>
-          <div>
-            <label for="b">Second</label>
-            <select id="b" name="b">{models.map((m, i) => <option value={m.slug} selected={i === 1}>{m.name}</option>)}</select>
-          </div>
-        </div>
-        <button class="f-btn" type="submit">Open the comparison</button>
-      </div>
-    </form>
+    <div class="prose">
+      {intro.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
     <div class="grid3">
       <a class="card" href="/compare/best-for-small-spaces/">
         <h2>Small rooms</h2>
-        <p>Unfolded length times width, lowest first.</p>
+        <p>Unfolded length times width, lowest first. Clearance is not folded into the area.</p>
       </a>
       <a class="card" href="/compare/best-for-low-ceilings/">
         <h2>Low ceilings</h2>
-        <p>Unfolded height, shortest first, plus published ceiling rules.</p>
+        <p>Unfolded height, shortest first, plus the ceiling rules a manufacturer printed.</p>
       </a>
       <a class="card" href="/compare/best-folding/">
         <h2>Folding</h2>
         <p>Models the manufacturer says fold, ranked by published floor area.</p>
       </a>
     </div>
+    <h2>Written comparisons</h2>
+    <div class="grid2">
+      {written.map((item) => (
+        <a class="card" href={`/compare/${item.slug}/`}>
+          <h3>{item.label}</h3>
+          <p>{item.blurb}</p>
+        </a>
+      ))}
+    </div>
+    <form class="finder" id="pair-form">
+      <div class="finder-head">Any two models <span>Indexed only when a verdict is written</span></div>
+      <div class="finder-body">
+        <div class="f-grid">
+          <div>
+            <label for="a">First model</label>
+            <select id="a" name="a">{models.map((m) => <option value={m.slug}>{m.name}</option>)}</select>
+          </div>
+          <div>
+            <label for="b">Second model</label>
+            <select id="b" name="b">{models.map((m, i) => <option value={m.slug} selected={i === 1}>{m.name}</option>)}</select>
+          </div>
+        </div>
+        <button class="f-btn" type="submit">Open the comparison</button>
+      </div>
+    </form>
   </div>
 </Base>
 <script>

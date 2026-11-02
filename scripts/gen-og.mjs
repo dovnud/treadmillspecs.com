@@ -3,19 +3,19 @@ import sharp from 'sharp';
 import { models, brands } from '../src/data/models.ts';
 
 const pages = [
-  ['default', 'TreadmillSpecs', 'Manufacturer inches. No guessed specs.'],
+  ['default', 'TreadmillSpecs', 'Deck, motor, and footprint from manufacturer pages.'],
   ['page-models', 'Models', 'One cited table per treadmill.'],
   ['page-will-it-fit', 'Will it fit', 'Room, ceiling, and the published footprint.'],
   ['page-compare', 'Compare', 'Two models, the same fields, two sources.'],
   ['page-small-spaces', 'Small footprints', 'Ranked by published floor area.'],
   ['page-low-ceilings', 'Low ceilings', 'Published machine height, then the maker’s ceiling rule.'],
   ['page-best-folding', 'Folding treadmills', 'Smallest published footprint among models that fold.'],
-  ['page-how-we-verify', 'How we verify', 'A source URL on every row.'],
-  ['page-about', 'About', 'Treadmill Specs editorial team.'],
+  ['page-how-we-verify', 'How specs are checked', 'A source URL on every row.'],
+  ['page-about', 'About', 'Independent spec reference.'],
   ['page-contact', 'Contact', 'contact@treadmillspecs.com'],
   ['page-privacy', 'Privacy', 'Reminder requests are stored. Nothing is sent.'],
   ['page-terms', 'Terms', 'The manufacturer manual still governs the machine.'],
-  ['page-affiliate-disclosure', 'Affiliate disclosure', 'Amazon searches. No prices. Tag not active yet.'],
+  ['page-affiliate-disclosure', 'Affiliate disclosure', 'Amazon tag treadmillspecs-20. No prices.'],
   ...brands().map((b) => [`brand-${b.slug}`, b.name, 'Cited treadmill specs']),
   ...models.map((m) => [`model-${m.slug}`, m.name, m.deck.published ? m.deck.text.slice(0, 80) : 'Specs from the manufacturer page']),
 ];
@@ -29,7 +29,7 @@ function svg(title, sub) {
 <svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
   <rect width="1200" height="630" fill="#14241b"/>
   <rect x="0" y="0" width="1200" height="14" fill="#d6f25c"/>
-  <text x="72" y="180" fill="#d6f25c" font-family="Outfit, Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="4">TREADMILLSPECS.COM</text>
+  <text x="72" y="180" fill="#d6f25c" font-family="Outfit, Arial, sans-serif" font-size="28" font-weight="700">TreadmillSpecs.com</text>
   <text x="72" y="320" fill="#f4f7f2" font-family="Outfit, Arial, sans-serif" font-size="68" font-weight="700">${esc(title)}</text>
   <text x="72" y="400" fill="#c5d4c8" font-family="Arial, sans-serif" font-size="32">${esc(sub)}</text>
   <rect x="72" y="470" width="180" height="14" rx="7" fill="#d6f25c"/>

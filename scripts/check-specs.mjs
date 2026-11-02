@@ -1,5 +1,6 @@
-import { writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { models, pairs, brands, CHECKED } from '../src/data/models.ts';
+import { modelGuides, pairGuides, brandGuides } from '../src/data/guides.ts';
 import { AMAZON_TAG, ASINS, amazonProductUrl, amazonSearchUrl, linkFor } from '../src/config/affiliate.ts';
 
 const errors = [];
@@ -31,6 +32,22 @@ for (const m of models) {
   for (const url of [m.productUrl, m.deck.cite.url]) {
     if (!url.startsWith('https://')) errors.push(`${m.slug} bad product url`);
   }
+}
+
+const indexed = JSON.parse(readFileSync(new URL('../src/data/indexed-pairs.json', import.meta.url), 'utf8'));
+const pairSlugs = new Set(pairs().map((p) => p.slug));
+for (const slug of indexed) {
+  if (!pairSlugs.has(slug)) errors.push(`indexed pair missing ${slug}`);
+  if (!pairGuides[slug]) errors.push(`indexed pair has no guide ${slug}`);
+}
+for (const slug of Object.keys(pairGuides)) {
+  if (!indexed.includes(slug)) errors.push(`pair guide is not indexed ${slug}`);
+}
+for (const m of models) {
+  if (!modelGuides[m.slug]) errors.push(`missing model guide ${m.slug}`);
+}
+for (const b of brands()) {
+  if (!brandGuides[b.slug]) errors.push(`missing brand guide ${b.slug}`);
 }
 
 const dates = {

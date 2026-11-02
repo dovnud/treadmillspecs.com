@@ -1,20 +1,18 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
 
-const crumbs = [{ name: 'How we verify', path: '/how-we-verify/' }];
+const crumbs = [{ name: 'How specs are checked', path: '/how-we-verify/' }];
 const desc = 'How TreadmillSpecs.com checks treadmill specs: manufacturer pages and manuals only, a citation on every row, and no estimated inches.';
-const jsonld = [webPageLd('How we verify treadmill specs', '/how-we-verify/', desc, SITE.checked), crumbLd(crumbs)];
+const jsonld = [webPageLd('How treadmill specs are checked', '/how-we-verify/', desc, SITE.checked), crumbLd(crumbs)];
 ---
-<Base title="How we verify treadmill specs" description={desc} path="/how-we-verify/" nav="verify" og="/og/page-how-we-verify.png" jsonld={jsonld}>
+<Base title="How treadmill specs are checked" description={desc} path="/how-we-verify/" nav="verify" og="/og/page-how-we-verify.png" jsonld={jsonld}>
   <div class="wrap prose">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>How we verify specs</h1>
-      <Byline />
+      <h1>How specs are checked</h1>
     </div>
     <p>A number is printed as a fact only when a manufacturer page or that manufacturer’s manual states it. The row links the URL and the date that page was read. The date on this site, 1 November 2026, is that read date. It is not a rolling “updated” stamp.</p>
     <h2>What counts as a source</h2>
@@ -31,7 +29,9 @@ const jsonld = [webPageLd('How we verify treadmill specs', '/how-we-verify/', de
     <p>ASTM F2115 is the motorized-treadmill specification. The standard text is not quoted here, because it is not freely published in full and we will not fill clearance from memory. Clearance inches come from the manual or product page that states them: Sole’s 3 1/2 feet behind the deck on the 2026 F63, F65, F80, and F85 manuals; BowFlex’s “user height + 20.75 inches” ceiling line; Peloton’s clearance and ceiling sentences on the Tread Vision and Tread+ Vision shop pages. Where a page prints two rear clearances, the calculator keeps both and requires the larger one.</p>
     <p>Incline rise in inches is not estimated from percent grade and deck length. If the maker did not publish a ceiling rule, and did publish step-up height, the extra ceiling check is step-up height plus the height you type. That assumption is written on the result.</p>
     <h2>Prices and reminders</h2>
-    <p>No prices are shown. Amazon links are searches, not verified product pages, until an ASIN has been checked on a live Amazon page. The reminder form stores an email request. It does not send mail.</p>
+    <p>No prices are shown. An Amazon product link is used only after that live product page was opened and the title named one model. The other Amazon buttons are tagged searches. A search is not a verified match. The reminder form stores an email request. It does not send mail.</p>
+    <h2>Warranty lines</h2>
+    <p>A warranty length is included only when the same specification block, or the same manual section, states it. None of the blocks transcribed for this version do. The model pages say that, and they do not borrow a frame or motor term from a retailer, an older model year, or a different machine in the same brand. If a manufacturer page adds a warranty later, that is a correction, not a guess.</p>
     <p>Corrections: <a href="/contact/">contact</a>.</p>
   </div>
 </Base>

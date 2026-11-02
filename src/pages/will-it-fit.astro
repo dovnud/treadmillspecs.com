@@ -1,20 +1,23 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
+import FaqList from '../components/FaqList.astro';
+import Sections from '../components/Sections.astro';
 import { models } from '../data/models';
+import { fitPageSections } from '../lib/narrative';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
 
 const crumbs = [{ name: 'Will it fit', path: '/will-it-fit/' }];
-const desc = 'Check a treadmill’s published footprint, manufacturer clearances, and ceiling rule against your room. Missing clearances are not invented.';
+const desc = 'Check a treadmill’s published footprint, manufacturer clearances, and ceiling rule against your room. Missing clearances stay missing.';
+const sections = fitPageSections();
 const faqs = [
   {
     q: 'Where do the clearance inches come from?',
     a: 'Only from the manufacturer page or owner’s manual cited on the model. Sole’s 2026 F63, F65, F80, and F85 manuals say 3 1/2 feet behind the treadmill. BowFlex prints user height plus 20.75 inches for ceiling height. Peloton prints its own side, rear, and ceiling figures. Other models are checked on footprint and machine height alone when clearance is unpublished.',
   },
   {
-    q: 'Do you add incline rise?',
+    q: 'Does the check add incline rise?',
     a: 'Only when the manufacturer publishes a ceiling rule that already accounts for the person on the machine. This site does not estimate rise from incline percent and deck length.',
   },
   {
@@ -32,9 +35,8 @@ const jsonld = [
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>Will it fit</h1>
+      <h1>Will a treadmill fit</h1>
       <p class="lede">Room length, room width, ceiling height, and user height, then a model. Results use published inches. Every line says what was added and what was left out.</p>
-      <Byline />
     </div>
     <form class="finder" id="fit-form">
       <div class="finder-head">Room check <span>Inches, except weight</span></div>
@@ -61,19 +63,9 @@ const jsonld = [
       </div>
     </form>
     <div id="fit-out" hidden></div>
-    <h2>How a pass is decided</h2>
-    <div class="prose">
-      <ul>
-        <li>The floor rectangle is the published machine length and width. Published front, rear, and side clearances are added on the “in use” check. If a side or end is not published, it is not filled in.</li>
-        <li>That rectangle may sit either way in the room. Clearances stay on the machine’s length and width. They are not swapped.</li>
-        <li>Stored mode uses folded dimensions only, and only when the manufacturer published them. Workout clearances are not applied to a folded machine.</li>
-        <li>Ceiling: the machine height must be under the ceiling. If the maker publishes “user height plus N inches” or a minimum ceiling, those rules are applied as written. Otherwise, when step-up height is published, the check is step-up plus user height, with no incline rise and no extra headroom.</li>
-        <li>A second rear figure on the same Peloton page is kept, and the larger one is the one that must fit.</li>
-      </ul>
-    </div>
-    {faqs.map((f) => (
-      <details class="faq"><summary>{f.q}</summary><div class="a"><p>{f.a}</p></div></details>
-    ))}
+    <Sections sections={sections} />
+    <h2>Common questions</h2>
+    <FaqList items={faqs} />
   </div>
 </Base>
 <script>

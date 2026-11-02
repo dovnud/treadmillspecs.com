@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
@@ -14,17 +13,19 @@ const jsonld = [webPageLd('Privacy policy', '/privacy/', desc, SITE.checked), cr
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>Privacy</h1>
-      <Byline />
     </div>
-    <p>TreadmillSpecs.com is a static reference site. Reading a page does not require an account.</p>
+    <p>TreadmillSpecs.com is a static reference site. Reading a spec page, a comparison, or the room check does not require an account, and those pages do not ask for your name.</p>
+    <h2>What the pages themselves collect</h2>
+    <p>The model tables, brand pages, and room check run in the browser from files built ahead of time. The room check does not send the inches you type to this site. The compare picker only changes the page address. There is no account, no comment system, and no advertising script.</p>
     <h2>Reminder requests</h2>
-    <p>The form on a model page can store an email address, the model name, the page path, the consent sentence, the time, and a hash of the IP address. The purpose is a price-drop reminder request. The form does not send email and does not start a newsletter. If the database is not connected, the request is not stored and the page says so.</p>
-    <p>Cloudflare Turnstile runs on that form to reject automated submissions. The secret key stays in the Cloudflare Pages secret TURNSTILE_SECRET. It is not in the site code.</p>
+    <p>The form on a model page can store a price-drop reminder request. The fields are the email address, the model page path, the purpose (price-drop), a short extra field that identifies the model, the consent sentence you accepted, the time, and a hash of the IP address. The form does not send email and does not start a newsletter. The consent sentence on the form says the address is stored for that request and that nothing is sent.</p>
+    <p>If the database binding is missing or the write fails, the request is not stored and the response says so. A duplicate of the same email, purpose, and model is not inserted twice. Rate-limit rows, separate from the reminder itself, are deleted when they are older than 24 hours. The reminder row is not on that 24-hour timer. To ask what was stored for your email, or to ask for it to be deleted, write to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+    <p>Cloudflare Turnstile runs on that form to reject automated submissions. The secret key stays in the Cloudflare Pages secret TURNSTILE_SECRET. It is not in the site code. The form also includes a hidden field that people do not see. Filling it is treated as an automated submission and is not stored as a real request.</p>
     <h2>Contact mail</h2>
-    <p>The contact page opens your own email program addressed to {SITE.email}. That page does not receive or store the message.</p>
-    <h2>Cookies and logs</h2>
-    <p>The site does not set an analytics cookie and does not run advertising scripts. Cloudflare, which hosts the site, may keep standard request logs. Amazon’s own site may set cookies if you follow a search link.</p>
+    <p>The contact page opens your own email program addressed to {SITE.email}. That page does not receive or store the message. Whatever you send is handled by your mail provider and by the inbox at that address.</p>
+    <h2>Cookies, logs, and Amazon</h2>
+    <p>The site does not set an analytics cookie and does not run advertising scripts. Cloudflare, which hosts the site, may keep standard request logs. Amazon’s own site may set cookies if you follow a product or search link. Those cookies are Amazon’s. The Amazon Associates tag on the link is treadmillspecs-20, which tells Amazon the click came from this site. It is not a tracker this site reads back.</p>
     <h2>Requests</h2>
-    <p>To ask what was stored for your email, or to ask for it to be deleted, write to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+    <p>Privacy requests go to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. Include the email address that would have been stored, and say whether you want a copy or a deletion. There is no other contact address on this site.</p>
   </div>
 </Base>

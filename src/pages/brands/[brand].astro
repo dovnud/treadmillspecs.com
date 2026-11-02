@@ -1,8 +1,9 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
-import { brands, models, modelPath } from '../../data/models';
+import Sections from '../../components/Sections.astro';
+import { brands, models, modelPath, useBox } from '../../data/models';
+import { brandSections } from '../../lib/narrative';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
@@ -13,7 +14,8 @@ const { brand } = Astro.props;
 const list = models.filter((m) => m.brandSlug === brand.slug);
 const path = `/brands/${brand.slug}/`;
 const crumbs = [{ name: brand.name, path }];
-const desc = `${brand.name} treadmill specs cited from manufacturer pages: ${list.map((m) => m.name.replace(brand.name + ' ', '')).join(', ')}.`;
+const sections = brandSections(brand.slug);
+const desc = sections[0].paragraphs[0].slice(0, 220);
 const jsonld = [
   webPageLd(`${brand.name} treadmill specs`, path, desc, SITE.checked),
   crumbLd(crumbs),
@@ -24,18 +26,32 @@ const jsonld = [
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>{brand.name}</h1>
-      <p class="lede">{list.length} model{list.length === 1 ? '' : 's'} with a spec table. Figures are from each model’s manufacturer page, checked 1 November 2026.</p>
-      <Byline />
+      <h1>{brand.name} treadmill specs</h1>
+      <p class="lede">{list.length} model{list.length === 1 ? '' : 's'} with a cited table. The notes below say how those published rows differ. The model page is the full citation.</p>
     </div>
-    <div class="grid2">
-      {list.map((m) => (
-        <a class="card" href={modelPath(m)}>
-          <h2>{m.name}</h2>
-          <p>{m.summary}</p>
-          <p class="go">Open the spec table</p>
-        </a>
-      ))}
+    <Sections sections={sections} />
+    <h2>Spec snapshot</h2>
+    <div class="tblwrap">
+      <table>
+        <thead>
+          <tr><th>Model</th><th>Running surface</th><th>Motor</th><th>User limit</th><th>Footprint</th><th>Folds</th></tr>
+        </thead>
+        <tbody>
+          {list.map((m) => {
+            const box = useBox(m);
+            return (
+              <tr>
+                <td><a href={modelPath(m)}>{m.name}</a></td>
+                <td>{m.deck.published ? m.deck.text : 'Not published by manufacturer'}</td>
+                <td class={m.motor.published ? undefined : 'unpub'}>{m.motor.text}</td>
+                <td>{m.maxUser.published ? m.maxUser.text : 'Not published by manufacturer'}</td>
+                <td class="mono">{box ? `${box.l}" × ${box.w}" × ${box.h}"` : 'Not published'}</td>
+                <td>{m.folds === 'yes' ? 'Yes' : m.folds === 'no' ? 'No' : 'Not published'}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   </div>
 </Base>

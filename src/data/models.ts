@@ -554,7 +554,7 @@ export const models: Model[] = [
     searchQuery: 'BowFlex T9 treadmill',
     summary: 'Folding treadmill. The product page prints 77.2 × 37 × 67.6 in. The owner’s manual prints 78 × 37 × 67 in.',
     notes: [
-      'Owner’s manual Tech Specs: https://download.bowflex.com/supportdocs/AM_OM/Bowflex/BFX.T9.OM.global.pdf — assembled dimensions 198 × 94 × 171 cm / 78" × 37" × 67", product weight 128 kg / 282.2 lb, max user weight 159 kg / 350 lb. Read 1 November 2026.',
+      'Owner’s manual Tech Specs: https://download.bowflex.com/supportdocs/AM_OM/Bowflex/BFX.T9.OM.global.pdf. Assembled dimensions 198 × 94 × 171 cm / 78" × 37" × 67", product weight 128 kg / 282.2 lb, max user weight 159 kg / 350 lb. Read 1 November 2026.',
       'The fit calculator uses 78" × 37" × 67.6" so a room that passes is large enough for either published set.',
     ],
   },

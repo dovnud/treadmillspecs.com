@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import HeroArt from '../components/HeroArt.astro';
 import { models, modelPath, brands } from '../data/models';
 import { linkFor, AFFILIATE_REL, AFFILIATE_TARGET } from '../config/affiliate';
@@ -9,15 +8,15 @@ import { crumbLd, webPageLd } from '../lib/ld';
 
 const desc = 'Treadmill deck, motor, and footprint from manufacturer pages, with Amazon links and lists for small rooms, low ceilings, and folding models.';
 const jsonld = [
-  webPageLd('Treadmill specs and will-it-fit', '/', desc, SITE.checked),
+  webPageLd('Treadmill specs and room fit', '/', desc, SITE.checked),
   crumbLd([]),
   {
     '@type': 'ItemList',
-    name: 'Buyer guides from published treadmill specs',
+    name: 'Treadmill lists from published specs',
     itemListElement: [
-      { name: 'Best for small spaces', path: '/compare/best-for-small-spaces/' },
-      { name: 'Best for low ceilings', path: '/compare/best-for-low-ceilings/' },
-      { name: 'Best folding treadmills', path: '/compare/best-folding/' },
+      { name: 'Small rooms', path: '/compare/best-for-small-spaces/' },
+      { name: 'Low ceilings', path: '/compare/best-for-low-ceilings/' },
+      { name: 'Folding treadmills', path: '/compare/best-folding/' },
       { name: 'Will it fit', path: '/will-it-fit/' },
     ].map((item, i) => ({ '@type': 'ListItem', position: i + 1, name: item.name, url: SITE.url + item.path })),
   },
@@ -25,61 +24,62 @@ const jsonld = [
 const brandList = brands();
 const shop = models.slice(0, 6);
 ---
-<Base title="Treadmill specs and will it fit" description={desc} path="/" nav="home" og="/og/default.png" jsonld={jsonld}>
+<Base title="Treadmill specs and room fit" description={desc} path="/" nav="home" og="/og/default.png" jsonld={jsonld}>
   <div class="wrap hero">
     <div class="hero-grid">
       <div>
-        <p class="kicker">Manufacturer pages, read 1 November 2026</p>
-        <h1>Will this treadmill <em>fit</em> — and where do you buy it?</h1>
-        <p class="lede">Deck, motor, weight, and footprint copied from the maker. Lists for small rooms, low ceilings, and folding models use only those inches. Amazon buttons sit on every model page. No prices.</p>
+        <h1>Treadmill specifications and room fit</h1>
+        <p class="lede">Deck size, motor, user weight, and footprint from the manufacturer page, plus a room check. Lists for small rooms, low ceilings, and folding models use those inches. Amazon links sit on the model pages. No prices.</p>
         <div class="hero-ctas">
           <a class="btn" href="/compare/best-for-small-spaces/">Small rooms</a>
           <a class="btn" href="/compare/best-folding/">Folding</a>
           <a class="btn ghost" href="/will-it-fit/">Will it fit</a>
         </div>
-        <Byline />
       </div>
       <HeroArt />
     </div>
   </div>
   <section class="wrap">
-    <h2>Start with a buying question</h2>
+    <h2>Lists</h2>
     <div class="grid3">
       <a class="card" href="/compare/best-for-small-spaces/">
-        <p class="kicker">Floor area</p>
-        <h3>Best for small spaces</h3>
-        <p>Unfolded length times width, shortest footprint first. Clearance is called out on the model, not folded into the rank.</p>
+        <h3>Small rooms</h3>
+        <p>Unfolded length times width, shortest footprint first. Clearance is called out on the model, and it is not folded into the rank.</p>
         <p class="go">Open the list</p>
       </a>
       <a class="card" href="/compare/best-for-low-ceilings/">
-        <p class="kicker">Machine height</p>
-        <h3>Best for low ceilings</h3>
-        <p>Shortest published machine height first, plus the ceiling rules a few makers actually print.</p>
+        <h3>Low ceilings</h3>
+        <p>Shortest published machine height first, plus the ceiling rules a few makers print.</p>
         <p class="go">Open the list</p>
       </a>
       <a class="card" href="/compare/best-folding/">
-        <p class="kicker">Folds, then area</p>
-        <h3>Best folding treadmills</h3>
-        <p>Only models the manufacturer says fold, ranked by published floor area. Not a ride test.</p>
+        <h3>Folding treadmills</h3>
+        <p>Only models the manufacturer says fold, ranked by published floor area. Stored height is in the table.</p>
         <p class="go">Open the list</p>
       </a>
     </div>
-    <h2>Comparisons people run before they buy</h2>
+    <h2>Side-by-side specs</h2>
     <div class="grid3">
       <a class="card" href="/compare/nordictrack-commercial-1750-vs-nordictrack-commercial-2450/">
         <h3>Commercial 1750 vs 2450</h3>
-        <p>Same belt and fold on NordicTrack’s pages. Speed and height are where the published numbers split.</p>
+        <p>Same belt, motor rating, and floor length. Speed and console height are where NordicTrack’s pages split.</p>
       </a>
       <a class="card" href="/compare/sole-f80-vs-sole-f85/">
         <h3>Sole F80 vs F85</h3>
-        <p>Motor, deck width, and unit measurements from Sole’s full specifications.</p>
+        <p>Motor line, deck width, and unit measurements from Sole’s full specifications.</p>
       </a>
       <a class="card" href="/compare/peloton-tread-vision-vs-peloton-tread-plus-vision/">
         <h3>Tread Vision vs Tread+</h3>
-        <p>Peloton’s current shop pages: belt, step-up, and the clearance each page prints.</p>
+        <p>Peloton’s current shop pages: belt, step-up, weight, and the clearance each page prints.</p>
       </a>
     </div>
-    <h2>Models, with the Amazon button on the page</h2>
+    <h2>How a spec gets on the page</h2>
+    <div class="prose">
+      <p>A number is copied when the manufacturer’s product page or that manufacturer’s manual states it. The row links the URL. The read date for this version is 1 November 2026. If the page does not state the field, the cell says “Not published by manufacturer.” Deck thickness is not used as step-up height. Incline levels are not turned into a percent. NordicTrack’s CHP line stays a lab rating, because that is the footnote they print.</p>
+      <p>The room check adds a clearance only when that model’s page or manual prints one. Sole’s folding manuals ask for 3 1/2 feet behind the deck. BowFlex prints user height plus 20.75 inches for the ceiling. Peloton prints side, rear, and ceiling figures. Other models are checked on the machine body, and on step-up plus your height when a step-up exists and a ceiling rule does not. The method page records the rules that apply when two official figures disagree.</p>
+      <p>Amazon links use the tag in the affiliate disclosure. A direct product link is used only after a live Amazon title named that one model. Everything else is a search. The search is not a verified match, and no price is shown.</p>
+    </div>
+    <h2>Models</h2>
     <div class="grid3">
       {shop.map((m) => {
         const link = linkFor(m.slug, m.searchQuery);

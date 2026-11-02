@@ -10,6 +10,7 @@
     "dev": "astro dev",
     "prebuild": "node --experimental-strip-types scripts/check-specs.mjs && node --experimental-strip-types scripts/gen-og.mjs",
     "build": "astro build",
+    "postbuild": "node scripts/audit-pages.mjs",
     "preview": "astro preview",
     "og": "node --experimental-strip-types scripts/gen-og.mjs",
     "indexnow": "node scripts/indexnow.mjs",

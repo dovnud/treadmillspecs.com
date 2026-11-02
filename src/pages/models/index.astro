@@ -1,12 +1,13 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import { models, modelPath, useBox } from '../../data/models';
+import { modelsIndexIntro } from '../../lib/narrative';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
 const crumbs = [{ name: 'Models', path: '/models/' }];
+const intro = modelsIndexIntro();
 const desc = 'Treadmill spec pages for NordicTrack, Sole, Horizon, BowFlex, Peloton, Life Fitness, and LifeSpan. Every number cites the manufacturer page it came from.';
 const jsonld = [webPageLd('Treadmill models', '/models/', desc, SITE.checked), crumbLd(crumbs)];
 ---
@@ -14,23 +15,32 @@ const jsonld = [webPageLd('Treadmill models', '/models/', desc, SITE.checked), c
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>Models</h1>
-      <p class="lede">Each page is one machine. The table is what the manufacturer published, plus the URL and the date we read it.</p>
-      <Byline />
+      <h1>Treadmill models</h1>
+      <p class="lede">Each page is one machine. The table is what the manufacturer published, with the URL it came from.</p>
     </div>
-    <div class="grid2">
-      {models.map((m) => {
-        const box = useBox(m);
-        return (
-          <a class="card" href={modelPath(m)}>
-            <p class="kicker">{m.brand}{m.sku ? ` · ${m.sku}` : ''}</p>
-            <h2>{m.name}</h2>
-            <p>{m.deck.published ? m.deck.text : 'Running surface not published.'}</p>
-            <p class="small muted">{box ? `Footprint ${box.l}" × ${box.w}" × ${box.h}"` : 'Footprint not published.'} · {m.maxUser.text}</p>
-            <p class="go">Spec table</p>
-          </a>
-        );
-      })}
+    <div class="prose">
+      {intro.map((paragraph) => <p>{paragraph}</p>)}
+    </div>
+    <div class="tblwrap">
+      <table>
+        <thead>
+          <tr><th>Model</th><th>Running surface</th><th>Motor</th><th>Footprint</th><th>Folds</th></tr>
+        </thead>
+        <tbody>
+          {models.map((m) => {
+            const box = useBox(m);
+            return (
+              <tr>
+                <td><a href={modelPath(m)}>{m.name}</a></td>
+                <td>{m.deck.published ? m.deck.text : 'Not published by manufacturer'}</td>
+                <td class={m.motor.published ? undefined : 'unpub'}>{m.motor.text}</td>
+                <td class="mono">{box ? `${box.l}" × ${box.w}" × ${box.h}"` : 'Not published'}</td>
+                <td>{m.folds === 'yes' ? 'Yes' : m.folds === 'no' ? 'No' : 'Not published'}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   </div>
 </Base>

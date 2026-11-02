@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Byline from '../components/Byline.astro';
 import Crumbs from '../components/Crumbs.astro';
 import { SITE } from '../lib/site';
 import { crumbLd, webPageLd } from '../lib/ld';
@@ -15,7 +14,16 @@ const jsonld = [webPageLd('Contact TreadmillSpecs.com', '/contact/', desc, SITE.
       <Crumbs crumbs={crumbs} />
       <h1>Contact</h1>
       <p class="lede">Corrections are welcome. A link to the manufacturer page, and the figure you think is wrong, is the fastest way to get a row fixed.</p>
-      <Byline />
+    </div>
+    <div class="prose">
+      <p>Email <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. There is no phone line and no other address. The form on this page opens your own mail program with that address filled in. This page does not receive the message, does not store it, and does not add you to a list.</p>
+      <h2>What to include in a correction</h2>
+      <p>Name the model, quote the figure on this site, and paste the manufacturer URL that shows a different figure. A photo of a spec sticker helps only if the page we cited has changed or the manual disagrees with the product page. We already keep both figures when two official sources disagree, as on the BowFlex T9 length. A retailer listing, a review, or an Amazon title is not enough to change a cell. The BowFlex T16 shopping title mentions a horsepower figure the BowFlex spec block does not, and that figure stays off the table.</p>
+      <p>Say whether the problem is a typo, a model-year mix-up, or a page that has been edited since 1 November 2026. That date is the read date for the tables. It is not updated by a layout change.</p>
+      <h2>What this address does not do</h2>
+      <p>It does not place orders, schedule assembly, or answer warranty claims for NordicTrack, Sole, Horizon, BowFlex, Peloton, Life Fitness, LifeSpan, or Amazon. Those companies have their own support channels. This site is not a dealer for them.</p>
+      <p>Price-drop reminder requests are a separate form on each model page. That form stores an email only when the database is connected, and it does not send mail. Questions about a stored address, or a request to delete one, can come to {SITE.email} as well. The privacy page lists the fields that form can store.</p>
+      <p>Affiliate questions can use the same address. The tag on Amazon links is treadmillspecs-20. Changing a spec does not depend on whether a model has a direct product link or a search link.</p>
     </div>
     <div class="grid2">
       <form class="stack" action={`mailto:${SITE.email}`} method="post" enctype="text/plain">

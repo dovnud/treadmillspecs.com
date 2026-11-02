@@ -1,9 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Byline from '../../components/Byline.astro';
 import Crumbs from '../../components/Crumbs.astro';
+import Sections from '../../components/Sections.astro';
 import { pairs, modelPath } from '../../data/models';
 import { specRows } from '../../lib/modelView';
+import { isIndexedPair, pairBlurb, pairSections, relatedComparisons } from '../../lib/narrative';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
@@ -12,10 +13,18 @@ export function getStaticPaths() {
 }
 const { pair } = Astro.props;
 const path = `/compare/${pair.slug}/`;
+const indexed = isIndexedPair(pair.slug);
+const sections = indexed ? pairSections(pair.slug) : null;
 const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: `${pair.a.name} vs ${pair.b.name}`, path }];
-const desc = `${pair.a.name} vs ${pair.b.name}. Same spec fields, each value cited to the manufacturer page that printed it.`;
+const desc = indexed
+  ? pairBlurb(pair.slug)
+  : `${pair.a.name} and ${pair.b.name} side by side, each cell from that model’s manufacturer page.`;
 const rowsA = specRows(pair.a);
 const rowsB = specRows(pair.b);
+const more = [
+  ...relatedComparisons(pair.a.slug),
+  ...relatedComparisons(pair.b.slug),
+].filter((item, index, all) => item.slug !== pair.slug && all.findIndex((other) => other.slug === item.slug) === index);
 const jsonld = [
   webPageLd(`${pair.a.name} vs ${pair.b.name}`, path, desc, SITE.checked),
   crumbLd(crumbs),
@@ -25,14 +34,19 @@ const jsonld = [
   },
 ];
 ---
-<Base title={`${pair.a.name} vs ${pair.b.name}`} description={desc} path={path} nav="compare" og="/og/page-compare.png" jsonld={jsonld}>
+<Base title={`${pair.a.name} vs ${pair.b.name}`} description={desc} path={path} nav="compare" og="/og/page-compare.png" jsonld={jsonld} noindex={!indexed}>
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
       <h1>{pair.a.name} vs {pair.b.name}</h1>
-      <p class="lede">Each cell is that model’s published text. A blank in the source stays “Not published by manufacturer.”</p>
-      <Byline />
+      {indexed ? (
+        <p class="lede">The verdict uses only rows the manufacturer printed. A blank in the source stays “Not published by manufacturer.”</p>
+      ) : (
+        <p class="lede">This pair is not in the site index. The table is still the published rows. Written verdicts are limited to comparisons where those rows support a choice.</p>
+      )}
     </div>
+    {sections && <Sections sections={sections} />}
+    <h2>Published rows</h2>
     <div class="tblwrap">
       <table>
         <thead>
@@ -60,5 +74,13 @@ const jsonld = [
       </table>
     </div>
     <p><a href={`/will-it-fit/?model=${pair.a.slug}`}>Fit check, {pair.a.name}</a> · <a href={`/will-it-fit/?model=${pair.b.slug}`}>Fit check, {pair.b.name}</a></p>
+    {more.length > 0 && (
+      <>
+        <h2>Other written comparisons</h2>
+        <ul>
+          {more.map((item) => <li><a href={`/compare/${item.slug}/`}>{item.label}</a></li>)}
+        </ul>
+      </>
+    )}
   </div>
 </Base>
