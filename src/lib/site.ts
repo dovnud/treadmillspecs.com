@@ -1,6 +1,8 @@
+import { SITE_URL } from '../../functions/lib/public-env.js';
+
 export const SITE = {
   name: 'TreadmillSpecs.com',
-  url: 'https://treadmillspecs.com',
+  url: SITE_URL,
   email: 'contact@treadmillspecs.com',
   tagline: 'Treadmill specifications from manufacturer pages, and a room-fit check',
   checked: '2026-11-01',

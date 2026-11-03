@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import { readFileSync } from 'node:fs';
+import { SITE_URL } from './functions/lib/public-env.js';
 
 // lastmod comes from src/data/page-dates.json, written by scripts/check-specs.mjs
 // from the date each manufacturer page was read. A path missing from the file
@@ -37,7 +38,7 @@ function sitemapPriority(path) {
 }
 
 export default defineConfig({
-  site: 'https://treadmillspecs.com',
+  site: SITE_URL,
   output: 'static',
   trailingSlash: 'always',
   build: { format: 'directory', inlineStylesheets: 'always' },

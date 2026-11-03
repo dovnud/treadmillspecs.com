@@ -1,3 +1,5 @@
+import { configuredHost } from './public-env.js';
+
 /** Stored-request capture for a price-drop reminder. Nothing in this module sends mail. */
 
 export const CONSENT = "We'll only store this email for a price-drop reminder request on this model. Nothing is sent.";
@@ -26,28 +28,35 @@ export function isEmail(value) {
   return true;
 }
 
-export function originAllowed(origin) {
+export function hostAllowed(host, env) {
+  const configured = configuredHost(env);
+  return host === configured
+    || host === `www.${configured}`
+    || host === 'treadmillspecs.com'
+    || host === 'www.treadmillspecs.com'
+    || host === 'treadmillspecs.pages.dev'
+    || host.endsWith('.treadmillspecs.pages.dev')
+    || host === 'localhost'
+    || host === '127.0.0.1';
+}
+
+export function originAllowed(origin, env) {
   if (!origin) return false;
   let url;
   try { url = new URL(origin); } catch { return false; }
   const host = url.hostname;
-  if (url.protocol === 'https:') {
-    return host === 'treadmillspecs.com'
-      || host === 'www.treadmillspecs.com'
-      || host === 'treadmillspecs.pages.dev'
-      || host.endsWith('.treadmillspecs.pages.dev');
-  }
+  if (url.protocol === 'https:') return hostAllowed(host, env);
   if (url.protocol === 'http:') return host === 'localhost' || host === '127.0.0.1';
   return false;
 }
 
-export function normalizePage(input) {
+export function normalizePage(input, env) {
   let raw = String(input ?? '').trim();
   if (!raw) return null;
   if (/^https?:\/\//i.test(raw)) {
     let url;
     try { url = new URL(raw); } catch { return null; }
-    if (!originAllowed(url.origin)) return null;
+    if (!originAllowed(url.origin, env)) return null;
     raw = url.pathname;
   }
   if (!raw.startsWith('/')) raw = `/${raw}`;
@@ -62,13 +71,13 @@ export function canonicalExtra(obj) {
   return JSON.stringify(sorted);
 }
 
-export function parseRequest(fields) {
+export function parseRequest(fields, env) {
   if (isHoneypot(fields)) return { ok: true, honeypot: true };
   const email = String(fields?.email ?? '').trim().toLowerCase();
   if (!isEmail(email)) return { ok: false, status: 400, message: 'Enter an email address.' };
   const purpose = String(fields?.purpose ?? '').trim();
   if (purpose !== 'price-drop') return { ok: false, status: 400, message: 'This form only stores a price-drop reminder request.' };
-  const page_url = normalizePage(fields?.page_url);
+  const page_url = normalizePage(fields?.page_url, env);
   const model_slug = String(fields?.model_slug ?? '').trim();
   const slug = page_url ? page_url.slice('/models/'.length, -1) : '';
   if (!page_url || !/^[a-z0-9-]{1,80}$/.test(model_slug) || model_slug !== slug) {
