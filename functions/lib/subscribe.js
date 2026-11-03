@@ -94,8 +94,23 @@ export function parseRequest(fields) {
   };
 }
 
-export async function hashIp(ip) {
-  const data = new TextEncoder().encode(`treadmillspecs-subscribers\n${ip || 'unknown'}`);
+export const SITE_ID = 'treadmillspecs.com';
+
+/** Stored purpose is namespaced so it cannot match another site's row in the shared table. */
+export function storedPurpose(purpose) {
+  if (typeof purpose !== 'string' || !/^[a-z0-9-]{1,40}$/.test(purpose)) {
+    throw new Error('purpose');
+  }
+  return `treadmillspecs:${purpose}`;
+}
+
+/**
+ * Hash the client IP. A site prefix keeps this digest distinct from other sites
+ * that share the database. When IP_HASH_SALT is set, it is mixed in as well.
+ */
+export async function hashIp(ip, salt = '') {
+  const extra = typeof salt === 'string' ? salt : '';
+  const data = new TextEncoder().encode(`${SITE_ID}\n${extra}\n${ip || 'unknown'}`);
   const buf = await crypto.subtle.digest('SHA-256', data);
   return [...new Uint8Array(buf)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }

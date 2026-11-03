@@ -25,14 +25,11 @@ Connect this Git repository. Production branch: `main`.
 
 ### D1
 
-The subscribers database could not be created because of an account limit. `functions/api/subscribe.js` looks for binding `DB` and returns a friendly message, without a 500, when the binding is missing. Nothing is emailed.
+Reminder requests are stored in the shared D1 database `minisplitzip-subscribers` (`2f5bdf97-e759-4e64-83bc-ae3537f0ed10`), bound as `DB`. Rows set `site` to `treadmillspecs.com` and prefix `purpose` with `treadmillspecs:`. Inserts use `ON CONFLICT(email, purpose) DO NOTHING`, so another site's row is left as it is.
 
-When a database can be created:
+Do not apply anything in `migrations/` to that database. `functions/api/subscribe.js` returns a friendly message, without a 500, when `DB` is missing. Nothing is emailed.
 
-1. Create a D1 database named `treadmillspecs-subscribers`.
-2. Bind it on the Pages project as `DB`.
-3. Apply `migrations/0001_subscribers.sql`.
-4. Put the real `database_id` in `wrangler.jsonc` if you deploy with Wrangler. Do not invent an id.
+Optional Pages secret: `IP_HASH_SALT`, mixed into the IP hash when set.
 
 ### Amazon Associates
 
