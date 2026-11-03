@@ -1,4 +1,4 @@
-import { CONSENT, hashIp, originAllowed, parseRequest } from '../lib/subscribe.js';
+import { CONSENT, SITE_ID, hashIp, originAllowed, parseRequest, storedPurpose } from '../lib/subscribe.js';
 
 const WINDOW_MS = 10 * 60 * 1000;
 const MAX_IN_WINDOW = 5;
@@ -98,9 +98,11 @@ async function turnstileOk(request, env, token) {
   return { ok: hostAllowed(String(data.hostname || '')) };
 }
 
-async function noteHit(env, ipHash, nowIso, retainStart) {
-  await env.DB.prepare('DELETE FROM subscribe_hits WHERE created_at < ?').bind(retainStart).run();
-  await env.DB.prepare('INSERT INTO subscribe_hits (ip_hash, created_at) VALUES (?, ?)').bind(ipHash, nowIso).run();
+async function noteAttempt(env, ipHash, nowIso, retainStart) {
+  // Only this site's digest: the hash includes the site id, so this does not
+  // delete another site's rows in the shared subscribe_attempts table.
+  await env.DB.prepare('DELETE FROM subscribe_attempts WHERE ip_hash = ? AND created_at < ?').bind(ipHash, retainStart).run();
+  await env.DB.prepare('INSERT INTO subscribe_attempts (ip_hash, created_at) VALUES (?, ?)').bind(ipHash, nowIso).run();
 }
 
 export async function handleSubscribe(request, env) {
@@ -112,7 +114,7 @@ export async function handleSubscribe(request, env) {
   const nowIso = now.toISOString();
   const windowStart = new Date(now.getTime() - WINDOW_MS).toISOString();
   const retainStart = new Date(now.getTime() - RETAIN_MS).toISOString();
-  const ipHash = await hashIp(request.headers.get('cf-connecting-ip') || '');
+  const ipHash = await hashIp(request.headers.get('cf-connecting-ip') || '', env.IP_HASH_SALT || '');
   const parsed = parseRequest(read.fields);
 
   if (parsed.ok && parsed.honeypot) return respond(request, 200, `Request stored. ${CONSENT}`, { stored: true });
@@ -124,12 +126,12 @@ export async function handleSubscribe(request, env) {
 
   try {
     const count = await env.DB.prepare(
-      'SELECT COUNT(*) AS n FROM subscribe_hits WHERE ip_hash = ? AND created_at > ?',
+      'SELECT COUNT(*) AS n FROM subscribe_attempts WHERE ip_hash = ? AND created_at > ?',
     ).bind(ipHash, windowStart).first('n');
     if (Number(count || 0) >= MAX_IN_WINDOW) {
       return respond(request, 429, 'Too many requests from this network. Try again later.', { page_url: parsed.record.page_url });
     }
-    await noteHit(env, ipHash, nowIso, retainStart);
+    await noteAttempt(env, ipHash, nowIso, retainStart);
   } catch {
     return respond(request, 200, 'We could not store that yet. The reminder database is not ready, so nothing was saved and nothing will be sent.', { stored: false, page_url: parsed.record.page_url });
   }
@@ -143,14 +145,15 @@ export async function handleSubscribe(request, env) {
     return respond(request, 400, message, { page_url: parsed.record.page_url });
   }
 
-  const { email, page_url, purpose, extra, consent_text } = parsed.record;
+  const { email, page_url, extra, consent_text } = parsed.record;
+  const purpose = storedPurpose(parsed.record.purpose);
   let stored = false;
   try {
     const inserted = await env.DB.prepare(
-      `INSERT INTO subscribers (email, page_url, purpose, extra, consent_text, created_at, ip_hash)
-       VALUES (?, ?, ?, ?, ?, ?, ?)
-       ON CONFLICT (email, purpose, extra) DO NOTHING`,
-    ).bind(email, page_url, purpose, extra, consent_text, nowIso, ipHash).run();
+      `INSERT INTO subscribers (email, page_url, purpose, extra, consent_text, created_at, ip_hash, site)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT(email, purpose) DO NOTHING`,
+    ).bind(email, page_url, purpose, extra, consent_text, nowIso, ipHash, SITE_ID).run();
     stored = Number(inserted?.meta?.changes || 0) > 0;
   } catch {
     return respond(request, 200, 'We could not store that yet. Nothing was saved and nothing will be sent.', { stored: false, page_url });

@@ -2,24 +2,22 @@
   // Cloudflare Pages project for treadmillspecs.com.
   // Build command: npm run build. Node 22. Output directory is dist.
   // TURNSTILE_SECRET is a Pages secret. It is not stored in this file.
+  // IP_HASH_SALT is an optional Pages secret mixed into the IP hash. Omit it to hash without a salt.
   //
-  // D1 could not be created (account database limit). Do not invent a database_id.
-  // When a database exists, add this binding in the Pages dashboard (name DB)
-  // and, if you deploy with Wrangler, uncomment the block below with the real id,
-  // then apply migrations/0001_subscribers.sql.
+  // Signup rows go in the shared D1 database minisplitzip-subscribers, already
+  // bound as DB on the Pages project. Do not apply migrations/ against it.
   // The subscribe function returns a friendly message when env.DB is missing.
   "name": "treadmillspecs",
   "pages_build_output_dir": "./dist",
   "compatibility_date": "2026-11-01",
   "vars": {
     "NODE_VERSION": "22"
-  }
-  // "d1_databases": [
-  //   {
-  //     "binding": "DB",
-  //     "database_name": "treadmillspecs-subscribers",
-  //     "database_id": "<create in the Cloudflare dashboard>",
-  //     "migrations_dir": "migrations"
-  //   }
-  // ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "minisplitzip-subscribers",
+      "database_id": "2f5bdf97-e759-4e64-83bc-ae3537f0ed10"
+    }
+  ]
 }

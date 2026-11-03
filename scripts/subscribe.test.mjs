@@ -1,4 +1,4 @@
-import { parseRequest, CONSENT } from '../functions/lib/subscribe.js';
+import { parseRequest, CONSENT, hashIp, storedPurpose } from '../functions/lib/subscribe.js';
 
 const good = parseRequest({
   email: 'reader@example.com',
@@ -28,5 +28,10 @@ const honey = parseRequest({
   fax_number: '555',
 });
 if (!honey.ok || !honey.honeypot) throw new Error('honeypot missed');
+
+if (storedPurpose(good.record.purpose) !== 'treadmillspecs:price-drop') throw new Error('purpose prefix');
+const plain = await hashIp('203.0.113.8', '');
+const salted = await hashIp('203.0.113.8', 'site-salt');
+if (plain === salted || plain.length !== 64) throw new Error('salt did not change the hash');
 
 console.log('subscribe tests ok');
