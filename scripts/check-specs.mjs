@@ -5,7 +5,10 @@ import { comparisonCopy } from '../src/data/comparison-copy.ts';
 import { brandCopy } from '../src/data/brand-copy.ts';
 import { AMAZON_TAG, ASINS, amazonProductUrl, amazonSearchUrl, linkFor } from '../src/config/affiliate.ts';
 
+const wrangler = readFileSync('wrangler.jsonc', 'utf8');
 const errors = [];
+if (!wrangler.includes('"SITE_URL": "https://treadmillspecs.com"')) errors.push('wrangler SITE_URL missing');
+if (!wrangler.includes('"HSTS": "1"')) errors.push('wrangler HSTS missing');
 if (CHECKED !== '2026-11-01') errors.push('CHECKED date drifted');
 if (AMAZON_TAG !== 'treadmillspecs-20') errors.push(`AMAZON_TAG is ${AMAZON_TAG}`);
 const sample = amazonSearchUrl('NordicTrack Commercial 1750 treadmill');

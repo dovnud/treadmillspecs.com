@@ -1,4 +1,4 @@
-import { CONSENT, SITE_ID, hashIp, originAllowed, parseRequest, storedPurpose } from '../lib/subscribe.js';
+import { CONSENT, SITE_ID, hashIp, hostAllowed, originAllowed, parseRequest, storedPurpose } from '../lib/subscribe.js';
 
 const WINDOW_MS = 10 * 60 * 1000;
 const MAX_IN_WINDOW = 5;
@@ -66,15 +66,6 @@ async function readFields(request) {
   }
 }
 
-function hostAllowed(host) {
-  return host === 'treadmillspecs.com'
-    || host === 'www.treadmillspecs.com'
-    || host === 'treadmillspecs.pages.dev'
-    || host.endsWith('.treadmillspecs.pages.dev')
-    || host === 'localhost'
-    || host === '127.0.0.1';
-}
-
 async function turnstileOk(request, env, token) {
   const secret = env.TURNSTILE_SECRET;
   if (!secret) return { ok: false, reason: 'missing-secret' };
@@ -95,7 +86,7 @@ async function turnstileOk(request, env, token) {
   if (!res.ok) return { ok: false, reason: 'verify-failed' };
   const data = await res.json().catch(() => null);
   if (!data?.success) return { ok: false, reason: 'verify-failed' };
-  return { ok: hostAllowed(String(data.hostname || '')) };
+  return { ok: hostAllowed(String(data.hostname || ''), env) };
 }
 
 async function noteAttempt(env, ipHash, nowIso, retainStart) {
@@ -106,7 +97,7 @@ async function noteAttempt(env, ipHash, nowIso, retainStart) {
 }
 
 export async function handleSubscribe(request, env) {
-  if (!originAllowed(request.headers.get('origin'))) return respond(request, 403, 'This request was refused.');
+  if (!originAllowed(request.headers.get('origin'), env)) return respond(request, 403, 'This request was refused.');
   const read = await readFields(request);
   if (read.error) return respond(request, 400, read.error);
 
@@ -115,7 +106,7 @@ export async function handleSubscribe(request, env) {
   const windowStart = new Date(now.getTime() - WINDOW_MS).toISOString();
   const retainStart = new Date(now.getTime() - RETAIN_MS).toISOString();
   const ipHash = await hashIp(request.headers.get('cf-connecting-ip') || '', env.IP_HASH_SALT || '');
-  const parsed = parseRequest(read.fields);
+  const parsed = parseRequest(read.fields, env);
 
   if (parsed.ok && parsed.honeypot) return respond(request, 200, `Request stored. ${CONSENT}`, { stored: true });
   if (!parsed.ok) return respond(request, parsed.status, parsed.message);

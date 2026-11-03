@@ -19,7 +19,8 @@ Connect this Git repository. Production branch: `main`.
 
 - Build command: `npm run build`
 - Build output: `dist` (`pages_build_output_dir` in `wrangler.jsonc`)
-- Environment variable: `NODE_VERSION` = `22`
+- Environment variable: `NODE_VERSION` = `22` (also in `wrangler.jsonc` `vars`)
+- `SITE_URL` and `HSTS` are `wrangler.jsonc` vars (`https://treadmillspecs.com` and `1`). Do not rely on copies in the Pages dashboard; those get wiped. The build imports the same values from `functions/lib/public-env.js`, and Functions fall back to that file when the binding is missing.
 - Secret: `TURNSTILE_SECRET` (Turnstile secret for site key `0x4AAAAAAFu5Ih5ew1LcB0Xy`)
 - Custom domain: `treadmillspecs.com`
 

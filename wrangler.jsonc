@@ -3,6 +3,7 @@
   // Build command: npm run build. Node 22. Output directory is dist.
   // TURNSTILE_SECRET is a Pages secret. It is not stored in this file.
   // IP_HASH_SALT is an optional Pages secret mixed into the IP hash. Omit it to hash without a salt.
+  // SITE_URL and HSTS live here, not in the Pages dashboard. Dashboard copies of them get wiped.
   //
   // Signup rows go in the shared D1 database minisplitzip-subscribers, already
   // bound as DB on the Pages project. Do not apply migrations/ against it.
@@ -11,7 +12,9 @@
   "pages_build_output_dir": "./dist",
   "compatibility_date": "2026-11-01",
   "vars": {
-    "NODE_VERSION": "22"
+    "NODE_VERSION": "22",
+    "SITE_URL": "https://treadmillspecs.com",
+    "HSTS": "1"
   },
   "d1_databases": [
     {
