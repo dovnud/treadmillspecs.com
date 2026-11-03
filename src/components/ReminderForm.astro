@@ -61,11 +61,17 @@ const CONSENT = "We'll only store this email for a price-drop reminder request o
         }
         widgetId = window.turnstile.render(el, {
           sitekey: sitekey,
-          size: 'invisible',
+          appearance: 'interaction-only',
           execution: 'execute',
           action: 'subscribe',
-          callback: function (t) { resolve(t || ''); },
-          'error-callback': function () { reject(new Error('verify')); },
+          callback: function (t) {
+            if (t) resolve(t);
+            else reject(Object.assign(new Error('verify'), { code: 'empty-token' }));
+          },
+          'error-callback': function (code) {
+            var shown = code == null || code === '' ? 'unknown' : String(code);
+            reject(Object.assign(new Error('verify'), { code: shown }));
+          },
           'timeout-callback': function () { reject(new Error('timeout')); }
         });
         window.turnstile.execute(widgetId);
@@ -86,8 +92,14 @@ const CONSENT = "We'll only store this email for a price-drop reminder request o
       var msg = (out.data && out.data.message) || (out.ok ? 'Request stored.' : 'Could not store the request.');
       setStatus(msg, out.ok ? 'ok' : 'bad');
     }).catch(function (err) {
-      var verify = err && (err.message === 'load' || err.message === 'verify' || err.message === 'timeout');
-      setStatus(verify ? 'Verification did not complete. Reload the page and try again.' : 'Could not store the request. You can try again.', 'bad');
+      var code = err && err.code ? ' (' + err.code + ')' : '';
+      if (err && err.message === 'verify') {
+        setStatus('Verification did not complete' + code + '. Reload the page and try again.', 'bad');
+      } else if (err && (err.message === 'load' || err.message === 'timeout')) {
+        setStatus('Verification did not complete. Reload the page and try again.', 'bad');
+      } else {
+        setStatus('Could not store the request. You can try again.', 'bad');
+      }
     }).then(function () { button.disabled = false; });
   });
 })();
