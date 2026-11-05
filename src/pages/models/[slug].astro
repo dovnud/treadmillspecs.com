@@ -9,9 +9,8 @@ import GuideSections from '../../components/GuideSections.astro';
 import { models, modelPath, useBox } from '../../data/models';
 import { guides } from '../../data/guides';
 import { comparisonsForModel } from '../../data/comparison-copy';
-import { modelFaqs, productLd, specRows } from '../../lib/modelView';
+import { modelFaqs, modelPageLd, specRows } from '../../lib/modelView';
 import { SITE } from '../../lib/site';
-import { crumbLd, webPageLd } from '../../lib/ld';
 
 export function getStaticPaths() {
   return models.map((m) => ({ params: { slug: m.slug }, props: { model: m } }));
@@ -24,12 +23,7 @@ const desc = m.summary;
 const faqs = modelFaqs(m);
 const box = useBox(m);
 const related = comparisonsForModel(m.slug);
-const jsonld = [
-  webPageLd(`${m.name} specs`, path, desc, SITE.checked),
-  crumbLd(crumbs),
-  productLd(m),
-  { '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
-];
+const jsonld = modelPageLd(m, SITE.checked);
 const rows = specRows(m);
 ---
 <Base title={`${m.name} specs`} description={desc} path={path} nav="models" og={`/og/model-${m.slug}.png`} ogAlt={`${m.name} specs`} jsonld={jsonld}>

@@ -1,6 +1,5 @@
-import type { Model } from '../data/models';
-import { modelPath } from '../data/models';
-import { SITE } from './site';
+import { modelPath, type Model } from '../data/models.ts';
+import { crumbLd, webPageLd } from './ld.ts';
 
 export function specRows(m: Model) {
   const rows = [
@@ -54,20 +53,27 @@ export function modelFaqs(m: Model) {
   ];
 }
 
-export function productLd(m: Model) {
-  return {
-    '@type': 'Product',
-    name: m.name,
-    sku: m.sku,
-    brand: { '@type': 'Brand', name: m.brand },
-    url: SITE.url + modelPath(m),
-    description: m.summary,
-    additionalProperty: specRows(m)
-      .filter((row) => row.field.published)
-      .map((row) => ({
-        '@type': 'PropertyValue',
-        name: row.label,
-        value: row.field.text,
+/**
+ * Model pages are WebPage documents. A Product snippet needs an offer, a review,
+ * or an aggregate rating, and an offer needs a real price. This catalog has no
+ * price, availability, or review, so the pages do not declare a product entity.
+ */
+export function modelPageLd(m: Model, checked: string) {
+  const path = modelPath(m);
+  const crumbs = [
+    { name: 'Models', path: '/models/' },
+    { name: m.name, path },
+  ];
+  return [
+    webPageLd(`${m.name} specs`, path, m.summary, checked),
+    crumbLd(crumbs),
+    {
+      '@type': 'FAQPage',
+      mainEntity: modelFaqs(m).map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
       })),
-  };
+    },
+  ];
 }
