@@ -12,7 +12,7 @@ const indexedComparisons = new Set(JSON.parse(readFileSync('./src/data/indexed-c
 const MONEY = new Set([
   '/compare/best-for-small-spaces/',
   '/compare/best-for-low-ceilings/',
-  '/compare/best-folding/',
+  '/compare/smallest-folding-footprints/',
   '/models/',
   '/will-it-fit/',
 ]);
@@ -22,7 +22,7 @@ function brandOf(slug) {
   return prefixes.find((p) => slug.startsWith(`${p}-`)) || slug;
 }
 
-/** Buyer pages outrank reference and legal URLs. Same-brand comparisons outrank the long cross-brand set. */
+/** Buyer pages outrank reference and legal URLs. Indexed comparisons are the pairs with a unique hand-written verdict. */
 function sitemapPriority(path) {
   if (path === '/') return 1;
   if (MONEY.has(path)) return 0.9;

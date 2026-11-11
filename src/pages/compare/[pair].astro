@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Crumbs from '../../components/Crumbs.astro';
 import GuideSections from '../../components/GuideSections.astro';
 import { pairs, modelPath } from '../../data/models';
-import { getComparisonCopy } from '../../data/comparison-copy';
+import { getComparisonCopy, indexableComparisonSlugs } from '../../data/comparison-copy';
 import { specRows } from '../../lib/modelView';
 import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
@@ -14,6 +14,7 @@ export function getStaticPaths() {
 const { pair } = Astro.props;
 const path = `/compare/${pair.slug}/`;
 const copy = getComparisonCopy(pair.slug);
+const indexable = indexableComparisonSlugs().includes(pair.slug);
 const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: `${pair.a.name} vs ${pair.b.name}`, path }];
 const desc = copy?.summary ?? `${pair.a.name} and ${pair.b.name}, with each value taken from that model’s manufacturer page.`;
 const rowsA = specRows(pair.a);
@@ -30,7 +31,7 @@ const jsonld = [
   },
 ];
 ---
-<Base title={`${pair.a.name} vs ${pair.b.name}`} description={desc} path={path} nav="compare" og="/og/page-compare.png" jsonld={jsonld} noindex={!copy}>
+<Base title={`${pair.a.name} vs ${pair.b.name}`} description={desc} path={path} nav="compare" og="/og/page-compare.png" jsonld={jsonld} noindex={!indexable}>
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />

@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { models, pairs, brands, CHECKED } from '../src/data/models.ts';
 import { guides } from '../src/data/guides.ts';
-import { comparisonCopy } from '../src/data/comparison-copy.ts';
+import { comparisonCopy, indexableComparisonSlugs } from '../src/data/comparison-copy.ts';
 import { brandCopy } from '../src/data/brand-copy.ts';
 import { AMAZON_TAG, ASINS, amazonProductUrl, amazonSearchUrl, linkFor } from '../src/config/affiliate.ts';
 
@@ -46,7 +46,7 @@ const dates = {
   '/compare/': CHECKED,
   '/compare/best-for-small-spaces/': CHECKED,
   '/compare/best-for-low-ceilings/': CHECKED,
-  '/compare/best-folding/': CHECKED,
+  '/compare/smallest-folding-footprints/': CHECKED,
   '/how-we-verify/': CHECKED,
   '/about/': CHECKED,
   '/contact/': CHECKED,
@@ -61,8 +61,9 @@ writeFileSync('src/data/page-dates.json', JSON.stringify(dates, null, 2) + '\n')
 
 const pairSlugs = new Set(pairs().map((p) => p.slug));
 const indexed = JSON.parse(readFileSync('./src/data/indexed-comparisons.json', 'utf8'));
-if (indexed.length !== comparisonCopy.length || indexed.some((slug, i) => slug !== comparisonCopy[i].slug)) {
-  errors.push('indexed-comparisons.json does not match comparison copy order');
+const expectedIndexed = indexableComparisonSlugs();
+if (indexed.length !== expectedIndexed.length || indexed.some((slug, i) => slug !== expectedIndexed[i])) {
+  errors.push('indexed-comparisons.json must list only pairs with a unique hand-written verdict, in copy order');
 }
 for (const slug of indexed) {
   if (!pairSlugs.has(slug)) errors.push(`indexed comparison is not a real pair: ${slug}`);

@@ -26,7 +26,7 @@ const jsonld = [
     itemListElement: [
       { name: 'Best for small spaces', path: '/compare/best-for-small-spaces/' },
       { name: 'Best for low ceilings', path: '/compare/best-for-low-ceilings/' },
-      { name: 'Best folding treadmills', path: '/compare/best-folding/' },
+      { name: 'Smallest folding footprints', path: '/compare/smallest-folding-footprints/' },
       { name: 'Will it fit', path: '/will-it-fit/' },
     ].map((item, i) => ({ '@type': 'ListItem', position: i + 1, name: item.name, url: SITE.url + item.path })),
   },
@@ -42,16 +42,31 @@ const shop = models.slice(0, 6);
         <p class="lede">Deck, motor, user weight, and footprint taken from the manufacturer page for each model. The lists below sort those inches. Amazon links sit on the model pages. Prices are not shown.</p>
         <div class="hero-ctas">
           <a class="btn" href="/compare/best-for-small-spaces/">Small rooms</a>
-          <a class="btn" href="/compare/best-folding/">Folding</a>
+          <a class="btn" href="/compare/smallest-folding-footprints/">Folding floor</a>
           <a class="btn ghost" href="/will-it-fit/">Will it fit</a>
         </div>
       </div>
       <HeroArt />
     </div>
   </div>
-  <section class="wrap">
-    <h2>What you can settle from the tables</h2>
-    <p>A model page answers four buying questions from the cited rows: who the published limits fit, whether the machine fits the room and the ceiling, what the motor and deck lines say, and whether a warranty term was printed. If the maker did not print a number, the cell says so. Incline levels are not turned into a percent. Deck thickness is not used as a step-up height. NordicTrack’s CHP footnote is kept with the motor, including their statement that the rating is a lab figure.</p>
+  <section class="wrap" id="room-check">
+    <form class="finder" action="/will-it-fit/" method="get">
+      <div class="finder-head">Will it fit <span>Your room, then a model</span></div>
+      <div class="finder-body">
+        <div class="f-grid">
+          <div><label for="home-roomL">Room length (in)</label><input id="home-roomL" name="roomL" type="number" min="1" step="0.1" required inputmode="decimal" /></div>
+          <div><label for="home-roomW">Room width (in)</label><input id="home-roomW" name="roomW" type="number" min="1" step="0.1" required inputmode="decimal" /></div>
+          <div><label for="home-ceiling">Ceiling height (in)</label><input id="home-ceiling" name="ceiling" type="number" min="1" step="0.1" required inputmode="decimal" /></div>
+          <div><label for="home-userH">User height (in)</label><input id="home-userH" name="userH" type="number" min="1" step="0.1" required inputmode="decimal" /></div>
+        </div>
+        <label for="home-model" style="margin-top:12px">Model</label>
+        <select id="home-model" name="model" required>
+          {models.map((m) => <option value={m.slug}>{m.name}</option>)}
+        </select>
+        <input type="hidden" name="mode" value="use" />
+        <button class="f-btn" type="submit">Check this room</button>
+      </div>
+    </form>
     <div class="grid3">
       <a class="card" href="/compare/best-for-small-spaces/">
         <h3>Small rooms</h3>
@@ -61,13 +76,13 @@ const shop = models.slice(0, 6);
         <h3>Low ceilings</h3>
         <p>Shortest published machine height first, plus the ceiling rules a few makers print. A short chassis is not the same thing as enough room for the person on the belt.</p>
       </a>
-      <a class="card" href="/compare/best-folding/">
-        <h3>Folding models</h3>
+      <a class="card" href="/compare/smallest-folding-footprints/">
+        <h3>Smallest folding footprints</h3>
         <p>Only models the manufacturer says fold, ranked by published floor area. The X16 and X24 pages say they do not fold. Unpublished fold status stays off the list.</p>
       </a>
     </div>
     <h2>Comparisons with a verdict</h2>
-    <p>Eighteen pairs have a written comparison, limited to places where the published specs support a choice. Other pairs still open from the <a href="/compare/">compare form</a> and are marked noindex, because a cross-brand spec dump does not add a decision the two model pages do not already give you.</p>
+    <p>Eighteen pairs have a written comparison. The source rules are on <a href="/how-we-verify/">how we verify</a>.</p>
     <div class="grid3">
       {featured.map((item) => {
         const [a, b] = item.slug.split('-vs-');
