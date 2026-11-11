@@ -8,9 +8,9 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "node --experimental-strip-types scripts/check-specs.mjs && node --experimental-strip-types scripts/schema.test.mjs && node --experimental-strip-types scripts/gen-og.mjs",
+    "prebuild": "node --experimental-strip-types scripts/check-specs.mjs && node --experimental-strip-types scripts/schema.test.mjs && node --experimental-strip-types scripts/check-titles.mjs && node --experimental-strip-types scripts/gen-og.mjs",
     "build": "astro build",
-    "postbuild": "node scripts/wordcount.mjs && node --experimental-strip-types scripts/schema.test.mjs --dist",
+    "postbuild": "node scripts/wordcount.mjs && node --experimental-strip-types scripts/check-titles.mjs --dist && node --experimental-strip-types scripts/schema.test.mjs --dist",
     "preview": "astro preview",
     "og": "node --experimental-strip-types scripts/gen-og.mjs",
     "indexnow": "node scripts/indexnow.mjs",

@@ -7,7 +7,7 @@ import { SITE } from '../../lib/site';
 import { crumbLd, webPageLd } from '../../lib/ld';
 
 const crumbs = [{ name: 'Compare', path: '/compare/' }];
-const desc = 'Maintained treadmill comparisons built from manufacturer specs, plus the small-room, low-ceiling, and folding lists.';
+const desc = 'Maintained treadmill comparisons built from manufacturer specs, plus the small-room, low-ceiling, and smallest-folding lists.';
 const jsonld = [webPageLd('Compare treadmill specs', '/compare/', desc, SITE.checked), crumbLd(crumbs)];
 const names = new Map(models.map((m) => [m.slug, m.name]));
 ---
@@ -18,7 +18,7 @@ const names = new Map(models.map((m) => [m.slug, m.name]));
       <h1>Compare treadmill specs</h1>
       <p class="lede">A maintained comparison is a pair where the published rows support a choice: who each limit fits, how the floor and ceiling change, what the motor and deck lines say, and a verdict that stays inside those rows. Warranty length is noted only when a cited section printed it. In this set, those sections did not.</p>
     </div>
-    <p>The form below opens any two models. Pairs without a write-up still show the two tables, and they are marked noindex so the sitemap stays on the pages that add a decision. There are {comparisonCopy.length} maintained guides.</p>
+    <p>The form below opens any two models. A pair is indexed only when it already has a unique hand-written verdict. Pairs without that verdict still show the two tables and stay noindex. There are {comparisonCopy.length} maintained guides.</p>
     <form class="finder" id="pair-form">
       <div class="finder-head">Two models <span>Any pair opens</span></div>
       <div class="finder-body">
@@ -44,8 +44,8 @@ const names = new Map(models.map((m) => [m.slug, m.name]));
         <h2>Low ceilings</h2>
         <p>Unfolded height, shortest first, plus the ceiling rules makers print.</p>
       </a>
-      <a class="card" href="/compare/best-folding/">
-        <h2>Folding</h2>
+      <a class="card" href="/compare/smallest-folding-footprints/">
+        <h2>Smallest folding footprints</h2>
         <p>Models the manufacturer says fold, ranked by published floor area.</p>
       </a>
     </div>

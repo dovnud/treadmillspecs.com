@@ -17,12 +17,21 @@ function shorten(input: string, maxHtml: number): string {
 
 export function serpTitle(input: string): string {
   const primary = input.replace(/\s+/g, ' ').trim().replace(/\s*\|\s*TreadmillSpecs(?:\.com)?\s*$/i, '');
+  if (!primary) return BRAND;
   const branded = `${primary}${SEP}${BRAND}`;
+  const versus = primary.match(/^(.+?)\s+vs\s+(.+)$/i);
+  if (versus) {
+    const left = versus[1].trim();
+    const right = versus[2].trim();
+    if (!left || !right) return primary;
+    if (htmlLen(branded) <= 60 && branded.includes(left) && branded.includes(right)) return branded;
+    return primary;
+  }
   if (primary.length >= 15 && htmlLen(branded) <= 60) return branded;
   const fitted = shorten(primary, 60 - htmlLen(SEP + BRAND));
-  if (fitted.length >= 15 && htmlLen(`${fitted}${SEP}${BRAND}`) <= 60) return `${fitted}${SEP}${BRAND}`;
-  const bare = shorten(primary, 60);
-  return bare.length >= 12 ? bare : shorten(`${primary} treadmill specs`, 60);
+  if (fitted.length >= 15 && htmlLen(`${fitted}${SEP}${BRAND}`) <= 60 && !/\svs$/i.test(fitted)) return `${fitted}${SEP}${BRAND}`;
+  const bare = shorten(primary, 70);
+  return bare.length >= 12 ? bare : primary;
 }
 
 export function metaDescription(input: string): string {

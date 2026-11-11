@@ -288,6 +288,22 @@ export function getComparisonCopy(slug: string): ComparisonCopy | undefined {
   return comparisonCopy.find((item) => item.slug === slug);
 }
 
+/** Pairs with a unique non-empty hand-written verdict. Templated or duplicate verdicts stay out. */
+export function indexableComparisonSlugs(): string[] {
+  const counts = new Map<string, number>();
+  for (const item of comparisonCopy) {
+    const verdict = item.verdict.trim();
+    if (!verdict) continue;
+    counts.set(verdict, (counts.get(verdict) ?? 0) + 1);
+  }
+  return comparisonCopy
+    .filter((item) => {
+      const verdict = item.verdict.trim();
+      return verdict.length > 0 && counts.get(verdict) === 1;
+    })
+    .map((item) => item.slug);
+}
+
 export function comparisonsForModel(slug: string): ComparisonCopy[] {
   return comparisonCopy.filter((item) => item.slug.split('-vs-').includes(slug));
 }

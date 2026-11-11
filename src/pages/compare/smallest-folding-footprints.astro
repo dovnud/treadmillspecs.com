@@ -12,21 +12,21 @@ const ranked = models
   .filter((row): row is { m: typeof models[number]; box: { l: number; w: number; h: number }; stored: { l: number; w: number; h: number } | null } => row.box != null)
   .map((row) => ({ ...row, area: row.box.l * row.box.w }))
   .sort((a, b) => a.area - b.area);
-const path = '/compare/best-folding/';
-const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: 'Folding', path }];
-const desc = 'Folding treadmills ranked by published unfolded floor area. Only models the manufacturer says fold. Not a ride-quality ranking.';
+const path = '/compare/smallest-folding-footprints/';
+const crumbs = [{ name: 'Compare', path: '/compare/' }, { name: 'Folding floor', path }];
+const desc = 'Folding treadmills ranked by published unfolded floor area, smallest first. Only models the manufacturer says fold. Not a ride-quality ranking.';
 const jsonld = [
-  webPageLd('Best folding treadmills by published footprint', path, desc, SITE.checked),
+  webPageLd('Smallest folding treadmill footprints', path, desc, SITE.checked),
   crumbLd(crumbs),
   { '@type': 'ItemList', itemListElement: ranked.map((row, i) => ({ '@type': 'ListItem', position: i + 1, name: row.m.name, url: SITE.url + modelPath(row.m) })) },
 ];
 ---
-<Base title="Best folding treadmills by footprint" description={desc} path={path} nav="folding" og="/og/page-best-folding.png" jsonld={jsonld}>
+<Base title="Smallest folding treadmill footprints" description={desc} path={path} nav="folding" og="/og/page-best-folding.png" jsonld={jsonld}>
   <div class="wrap">
     <div class="pagehead">
       <Crumbs crumbs={crumbs} />
-      <h1>Best folding treadmills</h1>
-      <p class="lede">“Best” on this page means the smallest published unfolded floor area among machines the manufacturer says fold. It is not a cushion score, a motor test, or a price ranking. This site does not print prices, and it does not publish a price cutoff.</p>
+      <h1>Smallest folding footprints</h1>
+      <p class="lede">This list ranks machines the manufacturer says fold, by published unfolded floor area, smallest first. It is not a cushion score, a motor test, or a price ranking. This site does not print prices, and it does not publish a price cutoff.</p>
     </div>
     <div class="tblwrap">
       <table>

@@ -95,6 +95,17 @@ const jsonld = [
     const select = form.querySelector('#model') as HTMLSelectElement;
     if ([...select.options].some((o) => o.value === preset)) select.value = preset;
   }
+  for (const id of ['roomL', 'roomW', 'ceiling', 'userH', 'userW']) {
+    const value = params.get(id);
+    const field = form.querySelector(`#${id}`) as HTMLInputElement | null;
+    if (value && field) field.value = value;
+  }
+  const mode = params.get('mode');
+  if (mode === 'use' || mode === 'stored') {
+    const modeField = form.querySelector('#mode') as HTMLSelectElement;
+    modeField.value = mode;
+  }
+  const ready = ['roomL', 'roomW', 'ceiling', 'userH', 'model'].every((id) => params.get(id));
   form.addEventListener('submit', (ev) => {
     ev.preventDefault();
     const data = new FormData(form);
@@ -115,4 +126,5 @@ const jsonld = [
     out.innerHTML = `<h2>${result.headline}</h2><p><a href="${modelPath(model)}">${model.name} spec table</a></p>${rows}`;
     out.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
+  if (ready) form.requestSubmit();
 </script>
